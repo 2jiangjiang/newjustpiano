@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:keepScreenOn="true"
+              android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/testplay"/>
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/testadd"/>
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/testreduce"/>
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+          android:layout_height="5dp"
+          android:background="@color/red_700"/>
+    <ly.jj.newjustpiano.views.BarrageView
+            android:id="@+id/barrage_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    <View android:layout_width="match_parent"
+          android:layout_height="5dp"
+          android:background="@color/purple_200"/>
+    <ly.jj.newjustpiano.views.KeyboardView
+            android:id="@+id/keyboard_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+</LinearLayout>
