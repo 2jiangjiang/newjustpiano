@@ -23,7 +23,9 @@
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
-                                  android:gravity="center">
+                                  android:gravity="center"
+                                  android:background="@drawable/page_background"
+                                  android:id="@+id/main_local">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
                                    android:layout_weight="1"
@@ -31,7 +33,7 @@
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:layout_gravity="center"
-                                  android:text="main"/>
+                                  android:text="本地"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout android:layout_width="0dp"
@@ -40,7 +42,9 @@
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
-                                  android:gravity="center">
+                                  android:gravity="center"
+                                  android:background="@drawable/page_background"
+                                  android:id="@+id/main_online">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
                                    android:layout_weight="1"
@@ -48,7 +52,7 @@
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:layout_gravity="center"
-                                  android:text="Online"/>
+                                  android:text="在线"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout android:layout_width="0dp"
@@ -57,7 +61,9 @@
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
-                                  android:gravity="center">
+                                  android:gravity="center"
+                                  android:background="@drawable/page_background"
+                                  android:id="@+id/main_songs">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
                                    android:layout_weight="1"
@@ -65,7 +71,7 @@
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:layout_gravity="center"
-                                  android:text="SongBank"/>
+                                  android:text="曲库"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout android:layout_width="0dp"
@@ -78,7 +84,9 @@
                                       android:layout_height="0dp"
                                       android:layout_weight="1"
                                       android:orientation="vertical"
-                                      android:gravity="center">
+                                      android:gravity="center"
+                                      android:background="@drawable/page_background"
+                                      android:id="@+id/main_setting">
                             <ImageView android:layout_width="match_parent"
                                        android:layout_height="0dp"
                                        android:layout_weight="1"
@@ -86,13 +94,15 @@
                             <TextView android:layout_width="wrap_content"
                                       android:layout_height="wrap_content"
                                       android:layout_gravity="center"
-                                      android:text="Setting"/>
+                                      android:text="设置"/>
                         </LinearLayout>
                         <LinearLayout android:layout_width="match_parent"
                                       android:layout_height="0dp"
                                       android:layout_weight="1"
                                       android:orientation="vertical"
-                                      android:gravity="center">
+                                      android:gravity="center"
+                                      android:background="@drawable/page_background"
+                                      android:id="@+id/main_sound">
                             <ImageView android:layout_width="match_parent"
                                        android:layout_height="0dp"
                                        android:layout_weight="1"
@@ -100,7 +110,7 @@
                             <TextView android:layout_width="wrap_content"
                                       android:layout_height="wrap_content"
                                       android:layout_gravity="center"
-                                      android:text="Sounds"/>
+                                      android:text="声库"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -108,7 +118,86 @@
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="0dp"
                           android:layout_weight="1">
-
+                <LinearLayout android:layout_width="0dp"
+                              android:layout_height="match_parent"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:gravity="center"
+                              android:background="@drawable/page_background"
+                              android:id="@+id/main_skin">
+                    <ImageView android:layout_width="match_parent"
+                               android:layout_height="0dp"
+                               android:layout_weight="1"
+                               android:src="@drawable/skins"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="皮肤"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp"
+                              android:layout_height="match_parent"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:gravity="center"
+                              android:background="@drawable/page_background"
+                              android:id="@+id/main_download">
+                    <ImageView android:layout_width="match_parent"
+                               android:layout_height="0dp"
+                               android:layout_weight="1"
+                               android:src="@drawable/download"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="下载"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp"
+                              android:layout_height="match_parent"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:gravity="center"
+                              android:background="@drawable/page_background"
+                              android:id="@+id/main_help">
+                    <ImageView android:layout_width="match_parent"
+                               android:layout_height="0dp"
+                               android:layout_weight="1"
+                               android:src="@drawable/help"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="帮助"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp"
+                              android:layout_height="match_parent"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:gravity="center"
+                              android:background="@drawable/page_background"
+                              android:id="@+id/main_bbs">
+                    <ImageView android:layout_width="match_parent"
+                               android:layout_height="0dp"
+                               android:layout_weight="1"
+                               android:src="@drawable/info"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="论坛"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp"
+                              android:layout_height="match_parent"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:gravity="center"
+                              android:background="@drawable/page_background"
+                              android:id="@+id/main_feedback">
+                    <ImageView android:layout_width="match_parent"
+                               android:layout_height="0dp"
+                               android:layout_weight="1"
+                               android:src="@drawable/feedback"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="反馈"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
