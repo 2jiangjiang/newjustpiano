@@ -19,6 +19,9 @@
         <activity android:name=".Keyboard" android:screenOrientation="userLandscape"/>
         <activity android:name=".Setting" android:screenOrientation="userLandscape"/>
         <activity android:name=".Main" android:screenOrientation="userLandscape"/>
+        <activity android:name=".Local" android:screenOrientation="userLandscape"/>
+        <activity android:name=".Online" android:screenOrientation="userLandscape"/>
+        <activity android:name=".Finish" android:screenOrientation="userLandscape"/>
     </application>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:ignore="ManifestOrder"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>

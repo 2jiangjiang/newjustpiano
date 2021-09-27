@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static ly.jj.newjustpiano.items.StaticItems.*;
 import static ly.jj.newjustpiano.tools.SoundMixer.AUDIO_MODE_POWER_SAVE;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
@@ -50,7 +51,7 @@ public class Init extends Activity {
         //setNoNotchBar(getWindow());
         setContentView(R.layout.init_page);
         progress = findViewById(R.id.init_progress);
-        verifyStorage();
+        //verifyStorage();
         new Thread(() -> {
             progress.setProgress(0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -127,6 +128,7 @@ public class Init extends Activity {
                 soundMixer.build(sampleRate(), channelCount());
             }
             Intent intent = new Intent(this, Main.class);
+            intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
 
         }).start();
