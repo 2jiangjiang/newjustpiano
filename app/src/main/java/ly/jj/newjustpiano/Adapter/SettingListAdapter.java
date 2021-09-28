@@ -44,8 +44,9 @@ public class SettingListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.set_switch, null);
             setBackground(database.readSetting(settings[i]) == 1, view);
             ((TextView) view.findViewById(R.id.set_text)).setText(settings[i]);
+            ((Switch) view.findViewById(R.id.set_switch)).setChecked(database.readSetting(settings[i]) == 1);
             ((Switch) view.findViewById(R.id.set_switch)).setOnCheckedChangeListener((compoundButton, b) -> {
-                database.writeSetting(settings[i], b ? 1: 0);
+                database.writeSetting(settings[i], b ? 1 : 0);
                 notifyDataSetChanged();
             });
         } else {
