@@ -24,7 +24,7 @@
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
                                   android:gravity="center"
-                                  android:background="@drawable/page_background"
+                                  android:background="@drawable/button__background"
                                   android:id="@+id/main_local">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
@@ -43,7 +43,7 @@
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
                                   android:gravity="center"
-                                  android:background="@drawable/page_background"
+                                  android:background="@drawable/button__background"
                                   android:id="@+id/main_online">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
@@ -62,7 +62,7 @@
                                   android:layout_height="match_parent"
                                   android:orientation="vertical"
                                   android:gravity="center"
-                                  android:background="@drawable/page_background"
+                                  android:background="@drawable/button__background"
                                   android:id="@+id/main_songs">
                         <ImageView android:layout_width="match_parent"
                                    android:layout_height="0dp"
@@ -85,7 +85,7 @@
                                       android:layout_weight="1"
                                       android:orientation="vertical"
                                       android:gravity="center"
-                                      android:background="@drawable/page_background"
+                                      android:background="@drawable/button__background"
                                       android:id="@+id/main_setting">
                             <ImageView android:layout_width="match_parent"
                                        android:layout_height="0dp"
@@ -101,7 +101,7 @@
                                       android:layout_weight="1"
                                       android:orientation="vertical"
                                       android:gravity="center"
-                                      android:background="@drawable/page_background"
+                                      android:background="@drawable/button__background"
                                       android:id="@+id/main_sound">
                             <ImageView android:layout_width="match_parent"
                                        android:layout_height="0dp"
@@ -123,7 +123,7 @@
                               android:layout_weight="1"
                               android:orientation="vertical"
                               android:gravity="center"
-                              android:background="@drawable/page_background"
+                              android:background="@drawable/button__background"
                               android:id="@+id/main_skin">
                     <ImageView android:layout_width="match_parent"
                                android:layout_height="0dp"
@@ -139,7 +139,7 @@
                               android:layout_weight="1"
                               android:orientation="vertical"
                               android:gravity="center"
-                              android:background="@drawable/page_background"
+                              android:background="@drawable/button__background"
                               android:id="@+id/main_download">
                     <ImageView android:layout_width="match_parent"
                                android:layout_height="0dp"
@@ -155,7 +155,7 @@
                               android:layout_weight="1"
                               android:orientation="vertical"
                               android:gravity="center"
-                              android:background="@drawable/page_background"
+                              android:background="@drawable/button__background"
                               android:id="@+id/main_help">
                     <ImageView android:layout_width="match_parent"
                                android:layout_height="0dp"
@@ -171,7 +171,7 @@
                               android:layout_weight="1"
                               android:orientation="vertical"
                               android:gravity="center"
-                              android:background="@drawable/page_background"
+                              android:background="@drawable/button__background"
                               android:id="@+id/main_bbs">
                     <ImageView android:layout_width="match_parent"
                                android:layout_height="0dp"
@@ -187,7 +187,7 @@
                               android:layout_weight="1"
                               android:orientation="vertical"
                               android:gravity="center"
-                              android:background="@drawable/page_background"
+                              android:background="@drawable/button__background"
                               android:id="@+id/main_feedback">
                     <ImageView android:layout_width="match_parent"
                                android:layout_height="0dp"

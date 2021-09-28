@@ -22,7 +22,7 @@ public class Main extends Activity {
         super.onCreate(bundle);
         setContentView(R.layout.main);
         findViewById(R.id.main_local).setOnClickListener(v -> {
-            Intent intent = new Intent(this, Keyboard.class);
+            Intent intent = new Intent(this, Local.class);
             startActivity(intent);
         });
         findViewById(R.id.main_online).setOnClickListener(v -> {
