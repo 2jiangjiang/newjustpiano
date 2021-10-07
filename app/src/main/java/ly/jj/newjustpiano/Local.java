@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
-import ly.jj.newjustpiano.Adapter.SettingListAdapter;
+import ly.jj.newjustpiano.Adapter.SongListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,8 @@ import java.util.List;
 import static ly.jj.newjustpiano.items.StaticItems.database;
 
 public class Local extends Activity {
-    private LayoutInflater inflater;
     private final List<Button> selectsList = new ArrayList<>();
+    private LayoutInflater inflater;
     private float textSize;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "ClickableViewAccessibility"})
@@ -27,13 +27,14 @@ public class Local extends Activity {
         super.onCreate(bundle);
         setContentView(R.layout.local);
         inflater = LayoutInflater.from(this);
-        textSize = new TextView(this).getTextSize();
+        textSize = new TextView(this).getTextSize() / getResources().getDisplayMetrics().density;
         LinearLayout flipper_select = findViewById(R.id.local_flipper_select);
         ViewFlipper flipper = findViewById(R.id.local_flipper);
         Cursor selects = database.readSelects();
         while (selects.moveToNext()) {
             Button button = new Button(this);
             button.setText(selects.getString(0));
+            button.setTextSize(textSize);
             button.setBackground(getDrawable(R.drawable.button_background_t));
             button.setOnClickListener(v -> {
                 int i = flipper.getDisplayedChild();
@@ -55,14 +56,16 @@ public class Local extends Activity {
             selectsList.add(button);
             flipper_select.addView(button);
         }
-        selectsList.get(0).setTextSize((float) (textSize * 1.5));
+        if (selects.getCount() != 0)
+            selectsList.get(0).setTextSize((float) (textSize * 1.5));
         setFlipperTouchListener(flipper, flipper);
         selects.moveToFirst();
         do {
             GridView gridView = new GridView(this);
             gridView.setNumColumns(5);
             setFlipperTouchListener(gridView, flipper);
-            gridView.setAdapter(new SettingListAdapter(this));
+            if (selects.getCount() != 0)
+                gridView.setAdapter(new SongListAdapter(this, database.readByKey("subregion", selects.getString(0))));
             flipper.addView(gridView);
         } while (selects.moveToNext());
         flipper.setDisplayedChild(0);

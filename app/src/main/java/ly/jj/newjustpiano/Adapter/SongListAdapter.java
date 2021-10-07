@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+import ly.jj.newjustpiano.R;
 
 public class SongListAdapter extends BaseAdapter {
     private Context context;
@@ -35,7 +37,11 @@ public class SongListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-
-        return null;
+        cursor.moveToPosition(i);
+        if (view == null) {
+            view = inflater.inflate(R.layout.song_panel, null);
+            ((TextView) view.findViewById(R.id.song_name)).setText(cursor.getString(0));
+        }
+        return view;
     }
 }

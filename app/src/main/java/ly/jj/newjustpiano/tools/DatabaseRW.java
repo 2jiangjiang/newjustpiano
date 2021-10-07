@@ -57,9 +57,9 @@ public class DatabaseRW {
         return songs.query("songs", new String[]{"subregion"}, "", null, "subregion", null, null);
     }
 
-    public Cursor readBySubregion(String subregion) {
-        return songs.query("songs", new String[]{"subregion"},
-                "subregion like '" + subregion + "'",
+    public Cursor readByKey(String key, String name) {
+        return songs.query("songs", new String[]{"*"},
+                key + " like '" + name + "'",
                 null, null, null, null);
     }
 }
