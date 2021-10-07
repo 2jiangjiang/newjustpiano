@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Arrays;
-
 public class DatabaseRW {
     private final SQLiteDatabase settings;
     private final SQLiteDatabase songs;
@@ -46,6 +44,9 @@ public class DatabaseRW {
     public void test() {
         songs.delete("songs", "id", new String[]{});
         songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试1','1','1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('2','测试1','1','1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('3','测试1','1','1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('4','测试1','1','1','1')");
         songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试2','1','1','1')");
         songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试3','1','1','1')");
         songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试4','1','1','1')");
@@ -57,7 +58,8 @@ public class DatabaseRW {
     }
 
     public Cursor readBySubregion(String subregion) {
-        return songs.query("songs", new String[]{"subregion"}, "subregion like '" + subregion + "'", null, null, null, null);
+        return songs.query("songs", new String[]{"subregion"},
+                "subregion like '" + subregion + "'",
+                null, null, null, null);
     }
-
 }
