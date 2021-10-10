@@ -49,7 +49,7 @@ public class Init extends Activity {
         super.onCreate(bundle);
         setFullScreen(getWindow().getDecorView());
         //setNoNotchBar(getWindow());
-        setContentView(R.layout.init_page);
+        setContentView(R.layout.init);
         progress = findViewById(R.id.init_progress);
         //verifyStorage();
         new Thread(() -> {

@@ -2,15 +2,8 @@ package ly.jj.newjustpiano;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import static java.lang.Thread.sleep;
 
@@ -27,6 +20,10 @@ public class Main extends Activity {
         });
         findViewById(R.id.main_online).setOnClickListener(v -> {
             Intent intent = new Intent(this, Online.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.main_songs).setOnClickListener(v -> {
+            Intent intent = new Intent(this, Songs.class);
             startActivity(intent);
         });
         findViewById(R.id.main_setting).setOnClickListener(v -> {
