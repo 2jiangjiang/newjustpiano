@@ -21,7 +21,9 @@ public class DatabaseRW {
                 "author text not null," +
                 "pauthor text not null," +
                 "source int default 0," +
+                "bank text not null," +
                 "song blob not null)");
+        test();
     }
 
     public void writeSetting(String key, int value) {
@@ -43,18 +45,28 @@ public class DatabaseRW {
 
     public void test() {
         songs.delete("songs", "id", new String[]{});
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试1','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('2','测试1','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('3','测试1','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('4','测试1','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试2','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试3','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试4','1','1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,song) values('1','测试5','1','1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试1','1','1','default','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('2','测试1','1','1','default','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('3','测试1','1','1','default','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('4','测试1','1','1','default','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试2','1','1','default2','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试3','1','1','default2','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试4','1','1','default1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试5','1','1','default1','1')");
     }
 
     public Cursor readSelects() {
         return songs.query("songs", new String[]{"subregion"}, "", null, "subregion", null, null);
+    }
+
+    public Cursor readBanks(String key) {
+        return songs.query("songs", new String[]{"bank", "name", "subregion", "author", "pauthor"},
+                "name like '%"
+                        + key + "%' or subregion like '%"
+                        + key + "%' or author like '%"
+                        + key + "%' or pauthor like '%"
+                        + key + "%' or bank like '%"
+                        + key + "%'", null, "bank", null, null);
     }
 
     public Cursor readByKey(String key, String name) {
