@@ -17,8 +17,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
@@ -58,6 +60,16 @@ public class Init extends Activity {
                 data = getDataDir();
             } else {
                 data = getDir("data", MODE_PRIVATE);
+            }
+            {
+                try {
+                    InputStream inputStream = getAssets().open("2.mid");
+                    byte[] bytes = new byte[inputStream.available()];
+                    inputStream.read(bytes);
+                    playingSong = Base64.getEncoder().encodeToString(bytes);
+                } catch (IOException err) {
+                    err.printStackTrace();
+                }
             }
             database = new DatabaseRW(openOrCreateDatabase("settings.db", MODE_PRIVATE, null), openOrCreateDatabase("songs.db", MODE_PRIVATE, null));
             freshRate = getWindowManager().getDefaultDisplay().getRefreshRate();

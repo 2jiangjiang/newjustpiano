@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import static java.lang.Thread.sleep;
+
 public class SequenceExtractor {
     private Sequence sequence;
     private ByteBuffer midiFile;
@@ -156,6 +158,10 @@ public class SequenceExtractor {
     }
 
     public void sequence() {
+        try {
+            sleep(100);
+        } catch (InterruptedException ignored) {
+        }
         sequence.sequence();
     }
 

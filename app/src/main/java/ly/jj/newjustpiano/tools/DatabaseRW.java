@@ -3,6 +3,12 @@ package ly.jj.newjustpiano.tools;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import ly.jj.newjustpiano.items.StaticItems;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.Base64;
 
 public class DatabaseRW {
     private final SQLiteDatabase settings;
@@ -82,15 +88,17 @@ public class DatabaseRW {
     }
 
     public void test() {
+        String data = StaticItems.playingSong;
+
         songs.delete("songs", "id", new String[]{});
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试1','1','1','default','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('2','测试1','1','1','default','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('3','测试1','1','1','default','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('4','测试1','1','1','default','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试2','1','1','default2','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试3','1','1','default2','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试4','1','1','default1','1')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试5','1','1','default1','1')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试1','1','1','default','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('2','测试1','1','1','default','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('3','测试1','1','1','default','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('4','测试1','1','1','default','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试2','1','1','default2','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试3','1','1','default2','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试4','1','1','default1','" + data + "')");
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试5','1','1','default1','" + data + "')");
     }
 
     public Cursor readSelects() {

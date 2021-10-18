@@ -51,8 +51,7 @@ public class SongListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.song_panel, null);
             ((TextView) view.findViewById(R.id.song_name)).setText(cursor.getString(0));
             view.findViewById(R.id.song_play).setOnClickListener(v -> {
-                playingSong.clear();
-                playingSong = ByteBuffer.wrap(cursor.getBlob(DatabaseRW.SONG_DATA));
+                playingSong = cursor.getString(DatabaseRW.SONG_DATA);
                 Intent intent = new Intent(context, Keyboard.class);
                 context.startActivity(intent);
             });

@@ -21,7 +21,7 @@ public class StaticItems {
 
     public static DatabaseRW database;
 
-    public static ByteBuffer playingSong;
+    public static String playingSong;
 
     public static Bitmap white_m;
     public static Bitmap white_r;

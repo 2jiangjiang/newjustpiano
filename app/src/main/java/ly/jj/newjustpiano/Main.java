@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+
 import static java.lang.Thread.sleep;
+import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 
 public class Main extends Activity {
     private boolean exit;

@@ -11,6 +11,7 @@ import ly.jj.newjustpiano.views.KeyboardView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Base64;
 
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
@@ -40,7 +41,8 @@ public class Keyboard extends Activity {
                 soundMixer.play(e, 0x67);
             }
         });
-        SequenceExtractor sequenceExtractor = new SequenceExtractor(playingSong);
+        System.out.println(new String(Base64.getDecoder().decode(playingSong)));
+        SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.getDecoder().decode(playingSong));
         sequenceExtractor.extractor();
         sequenceExtractor.setOnNextListener((barrageView::addKey));
         new Thread(sequenceExtractor::sequence).start();
