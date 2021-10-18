@@ -109,6 +109,10 @@ public class Sequence {
             position++;
         }
 
+        public boolean isEnd() {
+            return position == keys.size()-1;
+        }
+
         public BarrageKey get() {
             if (position == keys.size()) return null;
             return keys.get(position);

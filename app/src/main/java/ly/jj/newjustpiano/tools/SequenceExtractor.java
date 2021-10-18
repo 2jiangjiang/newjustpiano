@@ -20,6 +20,10 @@ public class SequenceExtractor {
         }
     }
 
+    public SequenceExtractor(byte[] data) {
+        this(ByteBuffer.wrap(data));
+    }
+
     public SequenceExtractor(String path) {
         this(new File(path));
     }
@@ -118,9 +122,7 @@ public class SequenceExtractor {
                             case 0x07:
                                 sequence.addFlagEvent(time, new String(seq));
                                 break;
-                            case 0x51:
-                            case 0x58:
-                            case 0x59:
+                            default:
                                 sequence.addKey(time, bytes2int(seq), 0x80 | con, 0);
                                 break;
                         }

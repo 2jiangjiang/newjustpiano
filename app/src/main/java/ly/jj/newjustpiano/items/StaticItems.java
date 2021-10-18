@@ -7,6 +7,7 @@ import ly.jj.newjustpiano.tools.DatabaseRW;
 import ly.jj.newjustpiano.tools.SoundMixer;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 
 public class StaticItems {
     public static MediaFormat audioFormat;
@@ -19,6 +20,8 @@ public class StaticItems {
     public static String[] settings = {"123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789"};
 
     public static DatabaseRW database;
+
+    public static ByteBuffer playingSong;
 
     public static Bitmap white_m;
     public static Bitmap white_r;

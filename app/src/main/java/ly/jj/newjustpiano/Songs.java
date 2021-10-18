@@ -3,6 +3,8 @@ package ly.jj.newjustpiano;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -25,15 +27,22 @@ public class Songs extends Activity {
             adapter.setCursor(cursor);
             list.setAdapter(adapter);
         });
-        search.setOnEditorActionListener((textView, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
-                find.callOnClick();
-                return true;
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-            Cursor cursor = database.readBanks(textView.getText().toString());
-            adapter.setCursor(cursor);
-            list.setAdapter(adapter);
-            return false;
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Cursor cursor = database.readBanks(editable.toString());
+                adapter.setCursor(cursor);
+                list.setAdapter(adapter);
+            }
         });
         list.setAdapter(adapter);
     }

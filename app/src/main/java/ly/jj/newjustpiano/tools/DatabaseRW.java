@@ -8,6 +8,15 @@ public class DatabaseRW {
     private final SQLiteDatabase settings;
     private final SQLiteDatabase songs;
 
+    public static int SONG_DATA;
+    public static int SONG_ID;
+    public static int SONG_NAME;
+    public static int SONG_SUBREGION;
+    public static int SONG_AUTHOR;
+    public static int SONG_PAUTHOR;
+    public static int SONG_SOURCE;
+    public static int SONG_BANK;
+
     public DatabaseRW(SQLiteDatabase settings, SQLiteDatabase songs) {
         this.settings = settings;
         this.songs = songs;
@@ -23,6 +32,35 @@ public class DatabaseRW {
                 "source int default 0," +
                 "bank text not null," +
                 "song blob not null)");
+        String[] columnNames = songs.query("songs", new String[]{"*"}, null, null, null, null, null).getColumnNames();
+        for (int i = 0; i < columnNames.length; i++) {
+            switch (columnNames[i]) {
+                case "song":
+                    SONG_DATA = i;
+                    break;
+                case "id":
+                    SONG_ID = i;
+                    break;
+                case "name":
+                    SONG_NAME = i;
+                    break;
+                case "subregion":
+                    SONG_SUBREGION = i;
+                    break;
+                case "author":
+                    SONG_AUTHOR = i;
+                    break;
+                case "pauthor":
+                    SONG_PAUTHOR = i;
+                    break;
+                case "source":
+                    SONG_SOURCE = i;
+                    break;
+                case "bank":
+                    SONG_BANK = i;
+                    break;
+            }
+        }
         test();
     }
 

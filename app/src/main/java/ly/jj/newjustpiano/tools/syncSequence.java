@@ -38,11 +38,15 @@ public class syncSequence extends Sequence {
                         case 0x58:
                         case 0x59:
                             break;
+                        case 0x2f:
+                            for (Track track : tracks) {
+                                if (track.isEnd()) return;
+                            }
                     }
                 }
                 int sleep_tick = nextKey.time - lastKey.time;
                 int sleep_ms = sample * sleep_tick / 1000 / tick;
-                int sleep_ns = (sample * sleep_tick / tick % 1000)*1000;
+                int sleep_ns = (sample * sleep_tick / tick % 1000) * 1000;
                 sleep(sleep_ms, sleep_ns);
                 lastKey = nextKey;
                 nextKey = endKey;

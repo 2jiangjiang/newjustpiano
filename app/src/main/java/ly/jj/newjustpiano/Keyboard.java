@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
 import static ly.jj.newjustpiano.tools.StaticTools.setNoNotchBar;
@@ -39,21 +40,10 @@ public class Keyboard extends Activity {
                 soundMixer.play(e, 0x67);
             }
         });
-        play.setOnClickListener(e -> {
-            ByteBuffer buffer = ByteBuffer.allocate(0);
-            try {
-                InputStream inputStream = getAssets().open("2.mid");
-                byte[] bytes = new byte[inputStream.available()];
-                inputStream.read(bytes);
-                buffer = ByteBuffer.wrap(bytes);
-            } catch (IOException err) {
-                err.printStackTrace();
-            }
-            SequenceExtractor sequenceExtractor = new SequenceExtractor(buffer);
-            sequenceExtractor.extractor();
-            sequenceExtractor.setOnNextListener((barrageView::addKey));
-            new Thread(sequenceExtractor::sequence).start();
-        });
+        SequenceExtractor sequenceExtractor = new SequenceExtractor(playingSong);
+        sequenceExtractor.extractor();
+        sequenceExtractor.setOnNextListener((barrageView::addKey));
+        new Thread(sequenceExtractor::sequence).start();
         Button add = findViewById(R.id.testadd);
         add.setText("add!");
         add.setOnClickListener(e -> {
