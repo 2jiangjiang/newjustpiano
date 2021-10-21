@@ -3,6 +3,7 @@ package ly.jj.newjustpiano.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,6 @@ import ly.jj.newjustpiano.Keyboard;
 import ly.jj.newjustpiano.R;
 import ly.jj.newjustpiano.tools.DatabaseRW;
 import ly.jj.newjustpiano.tools.SequenceExtractor;
-
-import java.nio.ByteBuffer;
-import java.util.Base64;
 
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
@@ -58,11 +56,9 @@ public class SongListAdapter extends BaseAdapter {
             });
             view.findViewById(R.id.song_listen).setOnClickListener(v -> {
                 playingSong = cursor.getString(DatabaseRW.SONG_DATA);
-                SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.getDecoder().decode(playingSong));
+                SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
                 sequenceExtractor.extractor();
-                sequenceExtractor.setOnNextListener((value, volume) -> {
-                    soundMixer.play(value, volume);
-                });
+                sequenceExtractor.setOnNextListener((value, volume) -> soundMixer.play(value, volume));
                 new Thread(sequenceExtractor::sequence).start();
             });
             view.findViewById(R.id.song_share).setOnClickListener(v -> {

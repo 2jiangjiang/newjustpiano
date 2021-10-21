@@ -1,5 +1,7 @@
 package ly.jj.newjustpiano.tools;
 
+import ly.jj.newjustpiano.items.StaticItems;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -163,6 +165,8 @@ public class SequenceExtractor {
         } catch (InterruptedException ignored) {
         }
         sequence.sequence();
+        StaticItems.playingSong=null;
+        System.gc();
     }
 
     private void LargeLogcat(Object o) {

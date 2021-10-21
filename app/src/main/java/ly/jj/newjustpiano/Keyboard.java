@@ -2,21 +2,16 @@ package ly.jj.newjustpiano;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.Button;
 import androidx.annotation.Nullable;
 import ly.jj.newjustpiano.tools.SequenceExtractor;
 import ly.jj.newjustpiano.views.BarrageView;
 import ly.jj.newjustpiano.views.KeyboardView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.Base64;
-
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
-import static ly.jj.newjustpiano.tools.StaticTools.setNoNotchBar;
 
 public class Keyboard extends Activity {
     @Override
@@ -41,7 +36,7 @@ public class Keyboard extends Activity {
                 soundMixer.play(e, 0x67);
             }
         });
-        SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.getDecoder().decode(playingSong));
+        SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
         sequenceExtractor.extractor();
         sequenceExtractor.setOnNextListener((barrageView::addKey));
         new Thread(sequenceExtractor::sequence).start();
