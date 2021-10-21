@@ -14,6 +14,7 @@ import ly.jj.newjustpiano.tools.DatabaseRW;
 import ly.jj.newjustpiano.tools.SequenceExtractor;
 
 import java.nio.ByteBuffer;
+import java.util.Base64;
 
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
@@ -49,14 +50,15 @@ public class SongListAdapter extends BaseAdapter {
         cursor.moveToPosition(i);
         if (view == null) {
             view = inflater.inflate(R.layout.song_panel, null);
-            ((TextView) view.findViewById(R.id.song_name)).setText(cursor.getString(0));
+            ((TextView) view.findViewById(R.id.song_name)).setText(cursor.getString(DatabaseRW.SONG_NAME));
             view.findViewById(R.id.song_play).setOnClickListener(v -> {
                 playingSong = cursor.getString(DatabaseRW.SONG_DATA);
                 Intent intent = new Intent(context, Keyboard.class);
                 context.startActivity(intent);
             });
             view.findViewById(R.id.song_listen).setOnClickListener(v -> {
-                SequenceExtractor sequenceExtractor = new SequenceExtractor(cursor.getBlob(DatabaseRW.SONG_DATA));
+                playingSong = cursor.getString(DatabaseRW.SONG_DATA);
+                SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.getDecoder().decode(playingSong));
                 sequenceExtractor.extractor();
                 sequenceExtractor.setOnNextListener((value, volume) -> {
                     soundMixer.play(value, volume);

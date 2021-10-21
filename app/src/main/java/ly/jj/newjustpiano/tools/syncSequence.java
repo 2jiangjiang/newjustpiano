@@ -40,13 +40,17 @@ public class syncSequence extends Sequence {
                             break;
                         case 0x2f:
                             for (Track track : tracks) {
-                                if (track.isEnd()) return;
+                                if (!track.isEnd()) {
+                                    break;
+                                }
+                                return;
                             }
                     }
                 }
                 int sleep_tick = nextKey.time - lastKey.time;
                 int sleep_ms = sample * sleep_tick / 1000 / tick;
                 int sleep_ns = (sample * sleep_tick / tick % 1000) * 1000;
+                if (sleep_ms < 0 || sleep_ns < 0) continue;
                 sleep(sleep_ms, sleep_ns);
                 lastKey = nextKey;
                 nextKey = endKey;

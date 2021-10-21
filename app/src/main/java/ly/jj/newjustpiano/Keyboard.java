@@ -41,7 +41,6 @@ public class Keyboard extends Activity {
                 soundMixer.play(e, 0x67);
             }
         });
-        System.out.println(new String(Base64.getDecoder().decode(playingSong)));
         SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.getDecoder().decode(playingSong));
         sequenceExtractor.extractor();
         sequenceExtractor.setOnNextListener((barrageView::addKey));

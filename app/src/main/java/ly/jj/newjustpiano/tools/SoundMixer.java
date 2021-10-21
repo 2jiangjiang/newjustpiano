@@ -65,7 +65,7 @@ public class SoundMixer {
 
     public void play(String path, int volume) {
         lock.lock();
-        nativePlay(path, ((float) volume) / 128);
+        nativePlay(path, ((float) volume) / 255);
         lock.unlock();
     }
 

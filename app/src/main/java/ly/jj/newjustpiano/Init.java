@@ -25,6 +25,7 @@ import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static ly.jj.newjustpiano.items.StaticItems.*;
+import static ly.jj.newjustpiano.tools.SoundMixer.AUDIO_MODE_DEFAULT;
 import static ly.jj.newjustpiano.tools.SoundMixer.AUDIO_MODE_POWER_SAVE;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
 
@@ -136,7 +137,7 @@ public class Init extends Activity {
                 e.printStackTrace();
             } finally {
                 System.gc();
-                soundMixer.setMode(AUDIO_MODE_POWER_SAVE);
+                soundMixer.setMode(AUDIO_MODE_DEFAULT);
                 soundMixer.build(sampleRate(), channelCount());
             }
             Intent intent = new Intent(this, Main.class);
