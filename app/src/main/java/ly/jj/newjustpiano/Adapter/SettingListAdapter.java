@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import ly.jj.newjustpiano.R;
 
@@ -26,8 +25,6 @@ public class SettingListAdapter {
         table.removeAllViews();
         System.gc();
         TableRow row = new TableRow(context);
-        TableRow.LayoutParams params=new TableRow.LayoutParams();
-        params.span=2;
         for (int i = 0; i < switchSettings.length; i++) {
             final int a = i;
             View view = inflater.inflate(R.layout.set_switch, null);
@@ -39,24 +36,28 @@ public class SettingListAdapter {
                 setBackground(database.readSetting(switchSettings[a]) == 1, view);
             });
             row.addView(view);
-            row.setLayoutParams(params);
-
             if (row.getChildCount() == 5) {
                 table.addView(row);
                 row = new TableRow(context);
             }
         }
         table.addView(row);
+        row = new TableRow(context);
+        TableRow.LayoutParams params = new TableRow.LayoutParams();
+        params.span = 5;
         for (int i = 0; i < seekSettings.length; i++) {
             final int a = i;
             View view = inflater.inflate(R.layout.set_seek, null);
             setBackground(database.readSetting(seekSettings[a]) == 1, view);
             ((TextView) view.findViewById(R.id.set_text)).setText(seekSettings[a]);
-            ((SeekBar) view.findViewById(R.id.set_switch)).setProgress(database.readSetting(seekSettings[a]));
-            ((SeekBar) view.findViewById(R.id.set_switch)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            ((SeekBar) view.findViewById(R.id.set_seek)).setProgress(database.readSetting(seekSettings[a]));
+            ((SeekBar) view.findViewById(R.id.set_seek)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                    if (fromUser) {
+                        progress = (progress / 13+1)/2;
+                        seekBar.setProgress(progress * 25);
+                    }
                 }
 
                 @Override
@@ -66,17 +67,15 @@ public class SettingListAdapter {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
+                    database.writeSetting(seekSettings[a], seekBar.getProgress());
                 }
             });
+            view.setLayoutParams(params);
             row.addView(view);
-            row.setLayoutParams(params);
-
-            if (row.getChildCount() == 2) {
-                table.addView(row);
-                row = new TableRow(context);
-            }
+            table.addView(row);
+            row = new TableRow(context);
         }
+        System.gc();
     }
 
     private void setBackground(boolean b, View view) {

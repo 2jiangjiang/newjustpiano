@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 tools:ignore="UseSwitchCompatOrMaterialXml"
                 android:layout_gravity="right"
-                android:id="@+id/set_switch"/>
+                android:id="@+id/set_seek"/>
     </LinearLayout>
 
 </LinearLayout>

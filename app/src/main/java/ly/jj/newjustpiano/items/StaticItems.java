@@ -18,7 +18,7 @@ public class StaticItems {
     public static float freshRate;
 
     public static String[] switchSettings = {"123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789","123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789","123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789"};
-    public static String[] seekSettings={"111","222","333"};
+    public static String[] seekSettings={"111","222","333","444","555"};
 
     public static DatabaseRW database;
 
