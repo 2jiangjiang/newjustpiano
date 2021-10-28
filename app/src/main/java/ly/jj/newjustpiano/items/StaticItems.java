@@ -17,7 +17,8 @@ public class StaticItems {
     public static File soundCaches;
     public static float freshRate;
 
-    public static String[] settings = {"123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789"};
+    public static String[] switchSettings = {"123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789","123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789","123", "456", "789", "123", "456", "789", "123", "456", "789", "123", "456", "789"};
+    public static String[] seekSettings={"111","222","333"};
 
     public static DatabaseRW database;
 

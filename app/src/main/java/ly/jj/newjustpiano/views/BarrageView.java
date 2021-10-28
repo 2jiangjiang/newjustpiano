@@ -100,7 +100,7 @@ public class BarrageView extends View {
 
     public void setFreshRate(int rate) {
         sleep_ms = 1000 / rate;
-        sleep_ns = 1000000000 / rate - sleep_ms*1000000;
+        sleep_ns = 1000000000 / rate - sleep_ms * 1000000;
     }
 
     public void setCount(int i) {
@@ -116,12 +116,10 @@ public class BarrageView extends View {
     }
 
     public void addKey(int value, int volume) {
-        playKeys.add(new BarrageKey(0, volume, value, 0));
-        value = value % drawCount;
-        int r = value / 12;
-        int l = value % 12;
-        l = (l > 4 ? l + 1 : l) + 1;
-        drawKeys.add(new BarrageKey(0, volume, r * 14 + l, 0));
+
+        if (drawKeys.size() == 0 || drawKeys.get(drawKeys.size() - 1).length > 20)
+            drawKeys.add(new BarrageKey(0, volume, value, 0));
+        else playKeys.add(new BarrageKey(0, volume, value, 0));
     }
 
     private void resize() {
@@ -141,8 +139,20 @@ public class BarrageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        boolean first=true;
+        int play, r, l, value;
         for (BarrageKey key : drawKeys) {
-            canvas.drawBitmap((key.value % 2) == 0 ? note_black : note_white, key.value * interval - barrageWidth / 2, (key.length - barrageHeight), paint);
+            play = key.value % drawCount;
+            r = play / 12;
+            l = play % 12;
+            l = (l > 4 ? l + 1 : l) + 1;
+            value = r * 14 + l;
+            if (first){
+                first=false;
+                canvas.drawBitmap((value % 2) == 0 ? note_prac : note_play, value * interval - barrageWidth / 2, (key.length - barrageHeight), paint);
+                continue;
+            }
+            canvas.drawBitmap((value % 2) == 0 ? note_black : note_white, value * interval - barrageWidth / 2, (key.length - barrageHeight), paint);
         }
         super.onDraw(canvas);
     }

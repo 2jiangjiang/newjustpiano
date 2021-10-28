@@ -9,12 +9,13 @@
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"/>
     </LinearLayout>
-    <LinearLayout android:layout_weight="1"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp">
-        <GridView android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:numColumns="4"
-                  android:id="@+id/set_list"/>
-    </LinearLayout>
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp">
+        <TableLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:id="@+id/setting_table"
+                     android:stretchColumns="*"/>
+    </ScrollView>
 </LinearLayout>

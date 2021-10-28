@@ -6,53 +6,77 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.*;
 import ly.jj.newjustpiano.R;
 
-import static ly.jj.newjustpiano.items.StaticItems.database;
-import static ly.jj.newjustpiano.items.StaticItems.settings;
+import static ly.jj.newjustpiano.items.StaticItems.*;
 
-public class SettingListAdapter extends BaseAdapter {
+public class SettingListAdapter {
     private Context context;
     private LayoutInflater inflater;
+    private TableLayout table;
 
-    public SettingListAdapter(Context context) {
+    public SettingListAdapter(Context context, TableLayout table) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
+        this.table = table;
     }
 
-    @Override
-    public int getCount() {
-        return settings.length;
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.set_switch, null);
-            setBackground(database.readSetting(settings[i]) == 1, view);
-            ((TextView) view.findViewById(R.id.set_text)).setText(settings[i]);
-            ((Switch) view.findViewById(R.id.set_switch)).setChecked(database.readSetting(settings[i]) == 1);
+    public void start() {
+        table.removeAllViews();
+        System.gc();
+        TableRow row = new TableRow(context);
+        TableRow.LayoutParams params=new TableRow.LayoutParams();
+        params.span=2;
+        for (int i = 0; i < switchSettings.length; i++) {
+            final int a = i;
+            View view = inflater.inflate(R.layout.set_switch, null);
+            setBackground(database.readSetting(switchSettings[a]) == 1, view);
+            ((TextView) view.findViewById(R.id.set_text)).setText(switchSettings[a]);
+            ((Switch) view.findViewById(R.id.set_switch)).setChecked(database.readSetting(switchSettings[a]) == 1);
             ((Switch) view.findViewById(R.id.set_switch)).setOnCheckedChangeListener((compoundButton, b) -> {
-                database.writeSetting(settings[i], b ? 1 : 0);
-                notifyDataSetChanged();
+                database.writeSetting(switchSettings[a], b ? 1 : 0);
+                setBackground(database.readSetting(switchSettings[a]) == 1, view);
             });
-        } else {
-            setBackground(database.readSetting(settings[i]) == 1, view);
+            row.addView(view);
+            row.setLayoutParams(params);
+
+            if (row.getChildCount() == 5) {
+                table.addView(row);
+                row = new TableRow(context);
+            }
         }
-        return view;
+        table.addView(row);
+        for (int i = 0; i < seekSettings.length; i++) {
+            final int a = i;
+            View view = inflater.inflate(R.layout.set_seek, null);
+            setBackground(database.readSetting(seekSettings[a]) == 1, view);
+            ((TextView) view.findViewById(R.id.set_text)).setText(seekSettings[a]);
+            ((SeekBar) view.findViewById(R.id.set_switch)).setProgress(database.readSetting(seekSettings[a]));
+            ((SeekBar) view.findViewById(R.id.set_switch)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+            row.addView(view);
+            row.setLayoutParams(params);
+
+            if (row.getChildCount() == 2) {
+                table.addView(row);
+                row = new TableRow(context);
+            }
+        }
     }
 
     private void setBackground(boolean b, View view) {
