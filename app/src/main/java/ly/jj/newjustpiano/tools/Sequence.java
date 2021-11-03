@@ -110,11 +110,12 @@ public class Sequence {
         }
 
         public boolean isEnd() {
-            return position == keys.size()-1;
+            return position >= keys.size();
         }
 
         public BarrageKey get() {
-            if (position == keys.size()) return null;
+            if (position >= keys.size())
+                return new BarrageKey(0,0,0x2f,0);
             return keys.get(position);
         }
 

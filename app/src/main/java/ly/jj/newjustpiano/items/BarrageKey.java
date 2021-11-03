@@ -4,7 +4,7 @@ public class BarrageKey {
     public int channel;//from 0 single left double right
     public int value;
     public int volume;
-    public int length = 0;
+    public float length = 0;
     public int time;
     public boolean isOver = false;
 
@@ -16,7 +16,7 @@ public class BarrageKey {
         if (value > 0x7f) isOver = true;
     }
 
-    public void addTime(int tick) {
+    public void addTime(float tick) {
         length += tick;
     }
 

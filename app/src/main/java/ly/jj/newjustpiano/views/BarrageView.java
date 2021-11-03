@@ -16,6 +16,7 @@ import ly.jj.newjustpiano.items.StaticItems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
 import static ly.jj.newjustpiano.tools.StaticTools.zoomBitmap;
@@ -25,7 +26,7 @@ public class BarrageView extends View {
     private final List<BarrageKey> drawKeys = new CopyOnWriteArrayList<>();
     private final List<BarrageKey> playKeys = new CopyOnWriteArrayList<>();
     private int keyCount;
-    //private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
     private Bitmap note_white;
     private Bitmap note_black;
     private Bitmap note_play;
@@ -37,6 +38,7 @@ public class BarrageView extends View {
     private int viewHeight;
     private int sleep_ms;
     private int sleep_ns;
+    private float step;
     private final Thread iterator = new Thread(() -> {
         new Thread(() -> {
             try {
@@ -50,21 +52,23 @@ public class BarrageView extends View {
         }).start();
         try {
             while (true) {
+                lock.lock();
                 List<BarrageKey> list = new ArrayList<>();
                 for (BarrageKey key : drawKeys) {
-                    key.addTime(1);
+                    key.addTime(step);
                     if (key.length > viewHeight + barrageHeight) list.add(key);
                 }
                 drawKeys.removeAll(list);
                 list.clear();
                 for (BarrageKey key : playKeys) {
-                    key.addTime(1);
+                    key.addTime(step);
                     if (key.length > viewHeight) list.add(key);
                 }
                 playKeys.removeAll(list);
                 for (BarrageKey key : list) {
                     StaticItems.soundMixer.play(key.value, key.volume);
                 }
+                lock.unlock();
                 sleep(2);
             }
         } catch (InterruptedException e) {
@@ -116,10 +120,11 @@ public class BarrageView extends View {
     }
 
     public void addKey(int value, int volume) {
-
+        lock.lock();
         if (drawKeys.size() == 0 || drawKeys.get(drawKeys.size() - 1).length > 20)
             drawKeys.add(new BarrageKey(0, volume, value, 0));
         else playKeys.add(new BarrageKey(0, volume, value, 0));
+        lock.unlock();
     }
 
     private void resize() {
@@ -161,6 +166,7 @@ public class BarrageView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
+        step=viewHeight/100;
         resize();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         invalidate();
