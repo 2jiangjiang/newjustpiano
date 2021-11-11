@@ -2,8 +2,12 @@ package ly.jj.newjustpiano;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,15 +15,22 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import ly.jj.newjustpiano.Adapter.SongListAdapter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static ly.jj.newjustpiano.items.StaticItems.database;
+import static ly.jj.newjustpiano.tools.StaticTools.verifyStorage;
 
 public class Local extends Activity {
     private final List<Button> selectsList = new ArrayList<>();
     private LayoutInflater inflater;
     private float textSize;
+    private EditText path;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "ClickableViewAccessibility"})
     @Override
@@ -65,10 +76,78 @@ public class Local extends Activity {
             gridView.setNumColumns(5);
             setFlipperTouchListener(gridView, flipper);
             if (selects.getCount() != 0)
-                gridView.setAdapter(new SongListAdapter(this, database.readByKey("subregion", selects.getString(0))));
+                gridView.setAdapter(new SongListAdapter(this, "subregion", selects.getString(0)));
             flipper.addView(gridView);
         } while (selects.moveToNext());
         flipper.setDisplayedChild(0);
+        findViewById(R.id.local_upload).setOnClickListener(v -> {
+            verifyStorage(this);
+            Dialog dialog = new Dialog(this);
+            dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+            dialog.setContentView(R.layout.local_song_upload);
+            dialog.show();
+            dialog.findViewById(R.id.upload_path_button).setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("audio/mid");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, 1);
+            });
+            path = dialog.findViewById(R.id.upload_path_text);
+            dialog.findViewById(R.id.upload_cancel).setOnClickListener(view -> dialog.dismiss());
+            path.setOnEditorActionListener((v1, actionId, event) -> {
+                String str = v1.getText().toString();
+                str = str.substring(str.lastIndexOf("/") + 1);
+                str = str.substring(0, str.lastIndexOf("."));
+                ((EditText) dialog.findViewById(R.id.upload_name)).setText(str);
+                return false;
+            });
+            dialog.findViewById(R.id.upload_upload).setOnClickListener(view -> {
+                File file = new File(path.getText().toString());
+                byte[] data = new byte[0];
+                try {
+                    FileInputStream reader = new FileInputStream(file);
+                    data = new byte[reader.available()];
+                    reader.read(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String str = Base64.encodeToString(data, Base64.DEFAULT);
+                database.addSong(((EditText) dialog.findViewById(R.id.upload_name)).getText().toString(),
+                        ((EditText) dialog.findViewById(R.id.upload_subregion)).getText().toString(),
+                        ((EditText) dialog.findViewById(R.id.upload_author)).getText().toString(),
+                        "test",
+                        ((EditText) dialog.findViewById(R.id.upload_bank)).getText().toString(),
+                        str);
+                dialog.dismiss();
+                ((BaseAdapter) ((GridView) flipper.getCurrentView()).getAdapter()).notifyDataSetChanged();
+            });
+        });
+    }
+
+    @SuppressLint("SdCardPath")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        verifyStorage(this);
+        if (resultCode == Activity.RESULT_OK) {
+            String path = Uri.decode(data.getDataString());
+            boolean errorPath = true;
+            while (errorPath) {
+                errorPath = false;
+                if (!path.contains("/")) break;
+                path = path.substring(path.indexOf("/") + 1);
+                try {
+                    new FileInputStream("/sdcard/" + path);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    errorPath = true;
+                }
+            }
+            path = "/sdcard/" + path;
+            this.path.setText(path);
+            this.path.onEditorAction(IME_ACTION_DONE);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setFlipperTouchListener(View v, ViewFlipper flipper) {

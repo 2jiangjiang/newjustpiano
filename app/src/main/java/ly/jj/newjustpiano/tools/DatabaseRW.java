@@ -3,17 +3,8 @@ package ly.jj.newjustpiano.tools;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import ly.jj.newjustpiano.items.StaticItems;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.Base64;
 
 public class DatabaseRW {
-    private final SQLiteDatabase settings;
-    private final SQLiteDatabase songs;
-
     public static int SONG_DATA;
     public static int SONG_ID;
     public static int SONG_NAME;
@@ -22,6 +13,8 @@ public class DatabaseRW {
     public static int SONG_PAUTHOR;
     public static int SONG_SOURCE;
     public static int SONG_BANK;
+    private final SQLiteDatabase settings;
+    private final SQLiteDatabase songs;
 
     public DatabaseRW(SQLiteDatabase settings, SQLiteDatabase songs) {
         this.settings = settings;
@@ -67,7 +60,6 @@ public class DatabaseRW {
                     break;
             }
         }
-        test();
     }
 
     public void writeSetting(String key, int value) {
@@ -87,18 +79,16 @@ public class DatabaseRW {
         return -1;
     }
 
-    public void test() {
-        String data = StaticItems.playingSong;
-
+    public void test_clr() {
         songs.delete("songs", "id", new String[]{});
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试1','1','1','default','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('2','测试1','1','1','default','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('3','测试1','1','1','default','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('4','测试1','1','1','default','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试2','1','1','default2','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试3','1','1','default2','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试4','1','1','default1','" + data + "')");
-        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('1','测试5','1','1','default1','" + data + "')");
+    }
+
+    public void addSong(String name, String subregion, String author, String pauthor, String bank, String data) {
+        songs.execSQL("insert into songs(name,subregion,author,pauthor,bank,song) values('" + name + "','" + subregion + "','" + author + "','" + pauthor + "','" + bank + "','" + data + "')");
+    }
+
+    public void deleteSong(String data) {
+        songs.delete("songs", "song = ?", new String[]{data});
     }
 
     public Cursor readSelects() {
@@ -107,12 +97,11 @@ public class DatabaseRW {
 
     public Cursor readBanks(String key) {
         return songs.query("songs", new String[]{"bank", "name", "subregion", "author", "pauthor"},
-                "name like '%"
-                        + key + "%' or subregion like '%"
-                        + key + "%' or author like '%"
-                        + key + "%' or pauthor like '%"
-                        + key + "%' or bank like '%"
-                        + key + "%'", null, "bank", null, null);
+                "name like '%" + key + "%' " +
+                        "or subregion like '%" + key + "%' " +
+                        "or author like '%" + key + "%' " +
+                        "or pauthor like '%" + key + "%' " +
+                        "or bank like '%" + key + "%'", null, "bank", null, null);
     }
 
     public Cursor readByKey(String key, String name) {

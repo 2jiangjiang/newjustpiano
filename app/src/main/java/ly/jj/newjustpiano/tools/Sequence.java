@@ -8,11 +8,16 @@ import java.util.List;
 public class Sequence {
     public final List<Track> tracks = new ArrayList<>();
     public OnNextListener onNextListener;
+    public OnEndListener onEndListener;
     public Track operateTrack;
     public int tick;
 
     public void setOnNextListener(OnNextListener onNextListener) {
         this.onNextListener = onNextListener;
+    }
+
+    public void setOnEndListener(OnEndListener onEndListener) {
+        this.onEndListener = onEndListener;
     }
 
     public void onKey(int value, int volume) {
@@ -89,8 +94,16 @@ public class Sequence {
     protected void sequence() {
     }
 
+    public void release() {
+        tracks.clear();
+    }
+
     public interface OnNextListener {
         void doKey(int value, int volume);
+    }
+
+    public interface OnEndListener {
+        void exit() throws InterruptedException;
     }
 
     public static class Track {
@@ -115,7 +128,7 @@ public class Sequence {
 
         public BarrageKey get() {
             if (position >= keys.size())
-                return new BarrageKey(0,0,0x2f,0);
+                return new BarrageKey(0, 0, 0x2f | 0x80, 0);
             return keys.get(position);
         }
 

@@ -11,20 +11,26 @@
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
-                      android:background="@drawable/page_background">
+                      android:minHeight="40dp">
             <HorizontalScrollView android:layout_width="0dp"
                                   android:layout_height="wrap_content"
-                                  android:layout_weight="1">
+                                  android:layout_weight="1"
+                                  android:background="@drawable/page_background">
                 <LinearLayout android:layout_width="wrap_content"
-                              android:layout_height="match_parent"
+                              android:layout_height="wrap_content"
                               android:orientation="horizontal"
                               android:id="@+id/local_flipper_select"/>
             </HorizontalScrollView>
             <Button android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@drawable/button__background"
                     android:id="@+id/local_switch_hand"
                     android:text="右手"/>
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/button__background"
+                    android:id="@+id/local_upload"
+                    android:text="添加"/>
         </LinearLayout>
         <ViewFlipper android:layout_width="match_parent"
                      android:layout_height="0dp"

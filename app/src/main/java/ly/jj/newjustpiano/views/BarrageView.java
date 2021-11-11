@@ -25,8 +25,8 @@ public class BarrageView extends View {
     private final Paint paint = new Paint();
     private final List<BarrageKey> drawKeys = new CopyOnWriteArrayList<>();
     private final List<BarrageKey> playKeys = new CopyOnWriteArrayList<>();
-    private int keyCount;
     private final ReentrantLock lock = new ReentrantLock();
+    private int keyCount;
     private Bitmap note_white;
     private Bitmap note_black;
     private Bitmap note_play;
@@ -56,7 +56,7 @@ public class BarrageView extends View {
                 List<BarrageKey> list = new ArrayList<>();
                 for (BarrageKey key : drawKeys) {
                     key.addTime(step);
-                    if (key.length > viewHeight + barrageHeight) list.add(key);
+                    if (key.length > (viewHeight + barrageHeight)) list.add(key);
                 }
                 drawKeys.removeAll(list);
                 list.clear();
@@ -144,7 +144,7 @@ public class BarrageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        boolean first=true;
+        boolean first = true;
         int play, r, l, value;
         for (BarrageKey key : drawKeys) {
             play = key.value % drawCount;
@@ -152,8 +152,8 @@ public class BarrageView extends View {
             l = play % 12;
             l = (l > 4 ? l + 1 : l) + 1;
             value = r * 14 + l;
-            if (first){
-                first=false;
+            if (first) {
+                first = false;
                 canvas.drawBitmap((value % 2) == 0 ? note_prac : note_play, value * interval - barrageWidth / 2, (key.length - barrageHeight), paint);
                 continue;
             }
@@ -166,9 +166,10 @@ public class BarrageView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        step=viewHeight/100;
+        step = viewHeight / 100;
         resize();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         invalidate();
     }
+
 }

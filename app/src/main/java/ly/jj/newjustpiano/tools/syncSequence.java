@@ -5,7 +5,7 @@ import ly.jj.newjustpiano.items.BarrageKey;
 import static java.lang.Thread.sleep;
 
 public class syncSequence extends Sequence {
-    private int sample;
+    private int sample = 0;
 
     @Override
     public void sequence() {
@@ -16,19 +16,31 @@ public class syncSequence extends Sequence {
                 endKey = track.keys.get(track.keys.size() - 1);
             }
         }
+        System.out.println(endKey.time);
+        System.out.println(tracks.size());
+        for (Track track : tracks) {
+            System.out.println(track.keys.size());
+        }
         BarrageKey lastKey = new BarrageKey(0, 0, 0, 0);
         BarrageKey nextKey = endKey;
         Track nextTrack = null;
         try {
             while (true) {
+                if (tracks.size() == 0) return;
                 for (Track track : tracks) {
-                    if (track.get().time < nextKey.time) {
+                    if (track.get().value != (0x2F | 0x80) && track.get().time < nextKey.time) {
                         nextKey = track.get();
                         nextTrack = track;
                     }
                 }
                 nextTrack.play();
-                if (nextKey.value < 0x7f) {
+                int sleep_tick = nextKey.time - lastKey.time;
+                int sleep_ms = sample * sleep_tick / 1000 / tick;
+                int sleep_ns = (sample * 1000 * sleep_tick / tick % 1000000);
+                if (sleep_ms < 0) sleep_ms = 0;
+                if (sleep_ns < 0) sleep_ns = 0;
+                sleep(sleep_ms, sleep_ns);
+                if (nextKey.value < 0x80) {
                     onKey(nextKey.value, nextKey.volume);
                 } else {
                     switch (nextKey.value & 0x7f) {
@@ -39,19 +51,21 @@ public class syncSequence extends Sequence {
                         case 0x59:
                             break;
                         case 0x2f:
+                            boolean end = true;
                             for (Track track : tracks) {
                                 if (!track.isEnd()) {
+                                    end = false;
                                     break;
                                 }
-                                return;
                             }
+                            if (!end) {
+                                break;
+                            }
+                            if (onEndListener != null)
+                                onEndListener.exit();
+                            return;
                     }
                 }
-                int sleep_tick = nextKey.time - lastKey.time;
-                int sleep_ms = sample * sleep_tick / 1000 / tick;
-                int sleep_ns = (sample * sleep_tick / tick % 1000) * 1000;
-                if (sleep_ms < 0 || sleep_ns < 0) continue;
-                sleep(sleep_ms, sleep_ns);
                 lastKey = nextKey;
                 nextKey = endKey;
             }

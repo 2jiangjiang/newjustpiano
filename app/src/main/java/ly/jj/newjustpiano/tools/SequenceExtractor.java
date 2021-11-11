@@ -159,14 +159,21 @@ public class SequenceExtractor {
         sequence.setOnNextListener(onNextListener);
     }
 
+    public void setOnEndListener(Sequence.OnEndListener onEndListener) {
+        sequence.setOnEndListener(onEndListener);
+    }
+
     public void sequence() {
         try {
             sleep(1000);
         } catch (InterruptedException ignored) {
         }
         sequence.sequence();
-        StaticItems.playingSong=null;
+        StaticItems.playingSong = null;
         System.gc();
+    }
+    public void release(){
+        sequence.release();
     }
 
     private void LargeLogcat(Object o) {

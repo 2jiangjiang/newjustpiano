@@ -9,11 +9,14 @@ import ly.jj.newjustpiano.tools.SequenceExtractor;
 import ly.jj.newjustpiano.views.BarrageView;
 import ly.jj.newjustpiano.views.KeyboardView;
 
+import static java.lang.Thread.sleep;
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
 import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
 
 public class Keyboard extends Activity {
+    SequenceExtractor sequenceExtractor;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -29,15 +32,19 @@ public class Keyboard extends Activity {
         KeyboardView keyboardView = findViewById(R.id.keyboard_view);
         Button play = findViewById(R.id.testplay);
         play.setText("play!");
-        barrageView.setFreshRate(90);
+        barrageView.setFreshRate(60);
         keyboardView.setOnKeyDownListener(e -> {
             e += 12 * 4;
             if (e < 0x7f) {
                 soundMixer.play(e, 0x67);
             }
         });
-        SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
+        sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
         sequenceExtractor.extractor();
+        sequenceExtractor.setOnEndListener(() -> {
+            sleep(3000);
+            this.finish();
+        });
         sequenceExtractor.setOnNextListener((barrageView::addKey));
         new Thread(sequenceExtractor::sequence).start();
         Button add = findViewById(R.id.testadd);
@@ -52,5 +59,11 @@ public class Keyboard extends Activity {
             barrageView.addCount(-1);
             keyboardView.addCount(-1);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        sequenceExtractor.release();
+        super.onDestroy();
     }
 }

@@ -33,17 +33,6 @@ public class Init extends Activity {
     }
 
     ProgressBar progress;
-
-    private void verifyStorage() {
-        int REQUEST_EXTERNAL_STORAGE = 1;
-        String[] PERMISSIONS = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            if ((checkSelfPermission(PERMISSIONS[0]) | checkSelfPermission(PERMISSIONS[1])) != PackageManager.PERMISSION_GRANTED)
-                ;
-        ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_EXTERNAL_STORAGE);
-    }
-
-
     @SuppressLint("SdCardPath")
     @Override
     public void onCreate(Bundle bundle) {
@@ -52,23 +41,12 @@ public class Init extends Activity {
         //setNoNotchBar(getWindow());
         setContentView(R.layout.init);
         progress = findViewById(R.id.init_progress);
-        //verifyStorage();
         new Thread(() -> {
             progress.setProgress(0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 data = getDataDir();
             } else {
                 data = getDir("data", MODE_PRIVATE);
-            }
-            {
-                try {
-                    InputStream inputStream = getAssets().open("2.mid");
-                    byte[] bytes = new byte[inputStream.available()];
-                    inputStream.read(bytes);
-                    playingSong = Base64.encodeToString(bytes, Base64.DEFAULT);
-                } catch (IOException err) {
-                    err.printStackTrace();
-                }
             }
             database = new DatabaseRW(openOrCreateDatabase("settings.db", MODE_PRIVATE, null), openOrCreateDatabase("songs.db", MODE_PRIVATE, null));
             freshRate = getWindowManager().getDefaultDisplay().getRefreshRate();
