@@ -127,6 +127,7 @@
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="返回"
+                android:background="@drawable/button__background"
                 android:id="@+id/song_info_page_cancel"/>
     </LinearLayout>
 </LinearLayout>

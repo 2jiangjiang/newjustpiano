@@ -15,9 +15,8 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import ly.jj.newjustpiano.Adapter.SongListAdapter;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ public class Local extends Activity {
     private LayoutInflater inflater;
     private float textSize;
     private EditText path;
+    private Uri pathUri;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "ClickableViewAccessibility"})
     @Override
@@ -88,7 +88,7 @@ public class Local extends Activity {
             dialog.show();
             dialog.findViewById(R.id.upload_path_button).setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("audio/mid");
+                intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
             });
@@ -105,7 +105,7 @@ public class Local extends Activity {
                 File file = new File(path.getText().toString());
                 byte[] data = new byte[0];
                 try {
-                    FileInputStream reader = new FileInputStream(file);
+                    BufferedInputStream reader = new BufferedInputStream(getContentResolver().openInputStream(pathUri));
                     data = new byte[reader.available()];
                     reader.read(data);
                 } catch (IOException e) {
@@ -119,7 +119,8 @@ public class Local extends Activity {
                         ((EditText) dialog.findViewById(R.id.upload_bank)).getText().toString(),
                         str);
                 dialog.dismiss();
-                ((BaseAdapter) ((GridView) flipper.getCurrentView()).getAdapter()).notifyDataSetChanged();
+                super.onResume();
+                onCreate(bundle);
             });
         });
     }
@@ -129,21 +130,9 @@ public class Local extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         verifyStorage(this);
         if (resultCode == Activity.RESULT_OK) {
-            String path = Uri.decode(data.getDataString());
-            boolean errorPath = true;
-            while (errorPath) {
-                errorPath = false;
-                if (!path.contains("/")) break;
-                path = path.substring(path.indexOf("/") + 1);
-                try {
-                    new FileInputStream("/sdcard/" + path);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    errorPath = true;
-                }
-            }
-            path = "/sdcard/" + path;
-            this.path.setText(path);
+            pathUri = data.getData();
+            String name = Uri.decode(pathUri.getPath());
+            this.path.setText(name);
             this.path.onEditorAction(IME_ACTION_DONE);
             return;
         }

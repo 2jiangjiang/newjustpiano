@@ -3,13 +3,10 @@ package ly.jj.newjustpiano;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Base64;
 import android.widget.ProgressBar;
-import androidx.core.app.ActivityCompat;
 import ly.jj.newjustpiano.tools.DatabaseRW;
 import ly.jj.newjustpiano.tools.MediaDecoder;
 import ly.jj.newjustpiano.tools.SoundMixer;
@@ -24,7 +21,6 @@ import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static ly.jj.newjustpiano.items.StaticItems.*;
-import static ly.jj.newjustpiano.tools.SoundMixer.AUDIO_MODE_DEFAULT;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
 
 public class Init extends Activity {
@@ -33,6 +29,7 @@ public class Init extends Activity {
     }
 
     ProgressBar progress;
+
     @SuppressLint("SdCardPath")
     @Override
     public void onCreate(Bundle bundle) {
@@ -113,7 +110,7 @@ public class Init extends Activity {
                 e.printStackTrace();
             } finally {
                 System.gc();
-                soundMixer.setMode(AUDIO_MODE_DEFAULT);
+                soundMixer.setMode(database.readSetting(seekSettings[0]));
                 soundMixer.build(sampleRate(), channelCount());
             }
             Intent intent = new Intent(this, Main.class);

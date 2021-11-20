@@ -16,11 +16,13 @@ public class syncSequence extends Sequence {
                 endKey = track.keys.get(track.keys.size() - 1);
             }
         }
-        System.out.println(endKey.time);
-        System.out.println(tracks.size());
+        System.out.println("this midi file has " + tracks.size() + " tracks");
         for (Track track : tracks) {
-            System.out.println(track.keys.size());
+            System.out.println("the " + track.trackName + " has " + track.keys.size() + " keys");
+            System.out.println(track);
         }
+        return;
+        /*
         BarrageKey lastKey = new BarrageKey(0, 0, 0, 0);
         BarrageKey nextKey = endKey;
         Track nextTrack = null;
@@ -72,5 +74,7 @@ public class syncSequence extends Sequence {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+         */
     }
 }

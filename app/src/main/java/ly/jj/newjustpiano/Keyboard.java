@@ -30,15 +30,10 @@ public class Keyboard extends Activity {
         setContentView(R.layout.keyboard);
         BarrageView barrageView = findViewById(R.id.barrage_view);
         KeyboardView keyboardView = findViewById(R.id.keyboard_view);
-        Button play = findViewById(R.id.testplay);
-        play.setText("play!");
         barrageView.setFreshRate(60);
-        keyboardView.setOnKeyDownListener(e -> {
-            e += 12 * 4;
-            if (e < 0x7f) {
-                soundMixer.play(e, 0x67);
-            }
-        });
+        barrageView.setSpeed(400);
+        barrageView.setOnClickBarrageListener(System.out::println);
+        keyboardView.setOnKeyDownListener(barrageView::pressKey);
         sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
         sequenceExtractor.extractor();
         sequenceExtractor.setOnEndListener(() -> {
@@ -47,18 +42,6 @@ public class Keyboard extends Activity {
         });
         sequenceExtractor.setOnNextListener((barrageView::addKey));
         new Thread(sequenceExtractor::sequence).start();
-        Button add = findViewById(R.id.testadd);
-        add.setText("add!");
-        add.setOnClickListener(e -> {
-            barrageView.addCount(1);
-            keyboardView.addCount(1);
-        });
-        Button reduce = findViewById(R.id.testreduce);
-        reduce.setText("reduce!");
-        reduce.setOnClickListener(e -> {
-            barrageView.addCount(-1);
-            keyboardView.addCount(-1);
-        });
     }
 
     @Override

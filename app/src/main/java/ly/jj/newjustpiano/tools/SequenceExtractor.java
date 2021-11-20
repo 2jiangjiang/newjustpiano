@@ -38,6 +38,7 @@ public class SequenceExtractor {
 
     public void extractor() {
         System.out.println(new String(midiFile.array()));
+        if (midiFile.limit() < 4) return;
         byte[] mime = new byte[4];
         midiFile.get(mime);
         String MIME = new String(mime);
@@ -63,7 +64,6 @@ public class SequenceExtractor {
         int channels = bytes2int(new byte[]{head[2], head[3]});
         int tick = bytes2int(new byte[]{head[4], head[5]});
         sequence.setTick(tick);
-        int t = 0;
         while (midiFile.position() < midiFile.limit()) {
             byte[] event = new byte[4];
             midiFile.get(event);
@@ -72,7 +72,6 @@ public class SequenceExtractor {
                 System.out.println("Not MTrk but " + EVENT);
                 break;
             }
-            t++;
             length = new byte[4];
             midiFile.get(length);
             int dataLength = bytes2int(length);
@@ -81,6 +80,7 @@ public class SequenceExtractor {
             midiFile.get(data);
             int time = 0;
             sequence.addTrack();
+            byte lastCon = 0x00;
             for (int i = 0; i < data.length; i++) {
                 int wait = 0;
                 do {
@@ -89,12 +89,17 @@ public class SequenceExtractor {
                 } while ((data[i - 1] & 0xff) >> 7 == 1);
                 sequence.addTime(wait);
                 time += wait;
+                if (i == data.length) {
+                    System.out.println("break when " + i);
+                    break;
+                }
+                if ((data[i] & 0xff) > 0x7f) lastCon = data[i];
                 switch (data[i] & 0xff) {
                     case 0xf0:
                         break;
                     case 0xff:
                         int con = data[i + 1] & 0xff;
-                        int len = data[i + 2];
+                        int len = data[i + 2] & 0xff;
                         i += 2;
                         byte[] seq = new byte[len];
                         for (int j = 0; j < len; j++) {
@@ -138,7 +143,14 @@ public class SequenceExtractor {
                                 i += 2;
                                 break;
                             case 0x90:
-                                sequence.addKey(time, data[i + 2] & 0xff, data[i + 1] & 0xff, t % 2);
+                                sequence.addKey(time, data[i + 2] & 0xff, data[i + 1] & 0xff, data[i] & 0x0f);
+                                i += 2;
+                                break;
+                            case 0xa0:
+                                sequence.addKey(time, data[i + 2] & 0xff, data[i + 1] & 0xff, data[i] & 0x0f);
+                                sequence.finishKey(data[i + 1] & 0xff, data[i] & 0x0f);
+                            case 0xb0:
+                            case 0xe0:
                                 i += 2;
                                 break;
                             case 0xc0:
@@ -146,7 +158,27 @@ public class SequenceExtractor {
                                 i++;
                                 break;
                             default:
-                                i += 2;
+                                switch (lastCon & 0xff) {
+                                    case 0x80:
+                                        sequence.finishKey(data[i + 1] & 0xff, data[i] & 0x0f);
+                                        i += 2;
+                                        break;
+                                    case 0x90:
+                                        sequence.addKey(time, data[i + 2] & 0xff, data[i + 1] & 0xff, data[i] & 0x0f);
+                                        i += 2;
+                                        break;
+                                    case 0xa0:
+                                        sequence.addKey(time, data[i + 2] & 0xff, data[i + 1] & 0xff, data[i] & 0x0f);
+                                        sequence.finishKey(data[i + 1] & 0xff, data[i] & 0x0f);
+                                    case 0xb0:
+                                    case 0xe0:
+                                        i += 2;
+                                        break;
+                                    case 0xc0:
+                                    case 0xd0:
+                                        i++;
+                                        break;
+                                }
                                 break;
                         }
                         break;
@@ -172,7 +204,8 @@ public class SequenceExtractor {
         StaticItems.playingSong = null;
         System.gc();
     }
-    public void release(){
+
+    public void release() {
         sequence.release();
     }
 

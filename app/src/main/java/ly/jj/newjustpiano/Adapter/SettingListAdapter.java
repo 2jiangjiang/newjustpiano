@@ -55,8 +55,8 @@ public class SettingListAdapter {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if (fromUser) {
-                        progress = (progress / 13+1)/2;
-                        seekBar.setProgress(progress * 25);
+                        progress = (progress / 25 + 1) / 2;
+                        seekBar.setProgress(progress * 50);
                     }
                 }
 
@@ -67,7 +67,20 @@ public class SettingListAdapter {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    database.writeSetting(seekSettings[a], seekBar.getProgress());
+                    String str = "重启应用生效";
+                    switch (seekBar.getProgress() / 50) {
+                        case 0:
+                            str += "默认";
+                            break;
+                        case 1:
+                            str += "模式1";
+                            break;
+                        case 2:
+                            str += "模式2";
+                            break;
+                    }
+                    ((TextView) view.findViewById(R.id.set_info)).setText(str);
+                    database.writeSetting(seekSettings[a], seekBar.getProgress() / 50);
                 }
             });
             view.setLayoutParams(params);

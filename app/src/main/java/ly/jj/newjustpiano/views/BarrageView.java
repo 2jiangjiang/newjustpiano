@@ -19,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
+import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
 import static ly.jj.newjustpiano.tools.StaticTools.zoomBitmap;
 
 public class BarrageView extends View {
@@ -26,6 +27,7 @@ public class BarrageView extends View {
     private final List<BarrageKey> drawKeys = new CopyOnWriteArrayList<>();
     private final List<BarrageKey> playKeys = new CopyOnWriteArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
+    private OnClickBarrageListener onClickBarrageListener;
     private int keyCount;
     private Bitmap note_white;
     private Bitmap note_black;
@@ -36,14 +38,14 @@ public class BarrageView extends View {
     private float barrageHeight;
     private int viewWidth;
     private int viewHeight;
-    private int sleep_ms;
-    private int sleep_ns;
+    private int fresh_ms;
+    private int fresh_ns;
     private float step;
     private final Thread iterator = new Thread(() -> {
         new Thread(() -> {
             try {
                 while (true) {
-                    sleep(sleep_ms, sleep_ns);
+                    sleep(fresh_ms, fresh_ns);
                     invalidate();
                 }
             } catch (InterruptedException e) {
@@ -51,12 +53,19 @@ public class BarrageView extends View {
             }
         }).start();
         try {
+            int sleep_ns = 2000000;
+            while (step > 1.0) {
+                sleep_ns /= 2;
+                step /= 2;
+            }
+            int sleep_ms = sleep_ns / 1000000;
+            sleep_ns %= 1000000;
             while (true) {
                 lock.lock();
                 List<BarrageKey> list = new ArrayList<>();
                 for (BarrageKey key : drawKeys) {
                     key.addTime(step);
-                    if (key.length > (viewHeight + barrageHeight)) list.add(key);
+                    if (key.length > (viewHeight + barrageHeight * 2)) list.add(key);
                 }
                 drawKeys.removeAll(list);
                 list.clear();
@@ -66,15 +75,16 @@ public class BarrageView extends View {
                 }
                 playKeys.removeAll(list);
                 for (BarrageKey key : list) {
-                    StaticItems.soundMixer.play(key.value, key.volume);
+                    soundMixer.play(key.value, key.volume);
                 }
                 lock.unlock();
-                sleep(2);
+                sleep(sleep_ms, sleep_ns);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     });
+    private int speed;
     private int drawCount;
 
     public BarrageView(Context context) {
@@ -103,8 +113,13 @@ public class BarrageView extends View {
     }
 
     public void setFreshRate(int rate) {
-        sleep_ms = 1000 / rate;
-        sleep_ns = 1000000000 / rate - sleep_ms * 1000000;
+        fresh_ms = 1000 / rate;
+        fresh_ns = 1000000000 / rate - fresh_ms * 1000000;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+        step = (float) viewHeight / speed;
     }
 
     public void setCount(int i) {
@@ -117,6 +132,33 @@ public class BarrageView extends View {
         keyCount += i;
         resize();
         invalidate();
+    }
+
+    public void pressKey(int key) {
+        for (BarrageKey k : drawKeys) {
+            if (k.value % drawCount == key) {
+                drawKeys.remove(k);
+                if (onClickBarrageListener != null) {
+                    int a = (int) ((viewHeight + barrageHeight - k.length) / barrageHeight * 2);
+                    a = (a < 0) ? -a : a;
+                    a = Math.min(a, 4);
+                    onClickBarrageListener.onClickBarrage(a);
+                }
+                soundMixer.play(k.value, 0x67);
+                return;
+            }
+        }
+
+        if (drawKeys.size() != 0) {
+            soundMixer.play(((drawKeys.get(0).value) / drawCount) * 12 + key, 0x67);
+            if (onClickBarrageListener != null) {
+                onClickBarrageListener.onClickBarrage(4);
+            }
+        } else soundMixer.play(12 * 5 + key, 0x67);
+    }
+
+    public void setOnClickBarrageListener(OnClickBarrageListener onClickBarrageListener) {
+        this.onClickBarrageListener = onClickBarrageListener;
     }
 
     public void addKey(int value, int volume) {
@@ -166,10 +208,13 @@ public class BarrageView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        step = viewHeight / 100;
         resize();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         invalidate();
+        step = (float) viewHeight / speed;
     }
 
+    public interface OnClickBarrageListener {
+        void onClickBarrage(int level);
+    }
 }

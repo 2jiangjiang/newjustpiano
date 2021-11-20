@@ -11,8 +11,12 @@ public class DatabaseRW {
     public static int SONG_SUBREGION;
     public static int SONG_AUTHOR;
     public static int SONG_PAUTHOR;
-    public static int SONG_SOURCE;
+    public static int SONG_SOURCE_L;
+    public static int SONG_SOURCE_R;
     public static int SONG_BANK;
+    public static int SONG_DIFFICULT_R;
+    public static int SONG_DIFFICULT_L;
+
     private final SQLiteDatabase settings;
     private final SQLiteDatabase songs;
 
@@ -28,7 +32,10 @@ public class DatabaseRW {
                 "subregion text not null," +
                 "author text not null," +
                 "pauthor text not null," +
-                "source int default 0," +
+                "sourceR int default 0," +
+                "sourceL int default 0," +
+                "difficultR int default 0," +
+                "difficultL int default 0," +
                 "bank text not null," +
                 "song blob not null)");
         String[] columnNames = songs.query("songs", new String[]{"*"}, null, null, null, null, null).getColumnNames();
@@ -52,8 +59,17 @@ public class DatabaseRW {
                 case "pauthor":
                     SONG_PAUTHOR = i;
                     break;
-                case "source":
-                    SONG_SOURCE = i;
+                case "sourceL":
+                    SONG_SOURCE_L = i;
+                    break;
+                case "sourceR":
+                    SONG_SOURCE_R = i;
+                    break;
+                case "difficultR":
+                    SONG_DIFFICULT_R = i;
+                    break;
+                case "difficultL":
+                    SONG_DIFFICULT_L = i;
                     break;
                 case "bank":
                     SONG_BANK = i;

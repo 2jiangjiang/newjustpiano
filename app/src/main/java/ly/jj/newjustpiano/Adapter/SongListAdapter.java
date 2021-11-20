@@ -82,6 +82,10 @@ public class SongListAdapter extends BaseAdapter {
                 ((TextView) dialog.findViewById(R.id.song_info_page_pauthor)).setText(cursor.getString(DatabaseRW.SONG_PAUTHOR));
                 ((TextView) dialog.findViewById(R.id.song_info_page_subregion)).setText(cursor.getString(DatabaseRW.SONG_SUBREGION));
                 ((TextView) dialog.findViewById(R.id.song_info_page_bank)).setText(cursor.getString(DatabaseRW.SONG_BANK));
+                ((TextView) dialog.findViewById(R.id.song_info_page_source_R)).setText(cursor.getString(DatabaseRW.SONG_SOURCE_R));
+                ((TextView) dialog.findViewById(R.id.song_info_page_source_L)).setText(cursor.getString(DatabaseRW.SONG_SOURCE_L));
+                ((TextView) dialog.findViewById(R.id.song_info_page_difficult_R)).setText(cursor.getString(DatabaseRW.SONG_DIFFICULT_R));
+                ((TextView) dialog.findViewById(R.id.song_info_page_difficult_L)).setText(cursor.getString(DatabaseRW.SONG_DIFFICULT_L));
                 dialog.findViewById(R.id.song_info_page_delete).setOnClickListener(v1 -> {
                     Dialog dialog1 = new Dialog(context);
                     dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
