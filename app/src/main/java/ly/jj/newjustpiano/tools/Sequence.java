@@ -1,204 +1,215 @@
 package ly.jj.newjustpiano.tools;
 
 import ly.jj.newjustpiano.items.BarrageKey;
+import ly.jj.newjustpiano.items.LyricKey;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Sequence {
-    public final List<Track> tracks = new ArrayList<>();
-    public OnNextListener onNextListener;
-    public OnEndListener onEndListener;
-    public Track operateTrack;
-    public int tick;
+    public boolean useTick; //use tick time or sample time
+    public boolean isReleased;
+    protected int tick;
+    protected Track[] tracks;
+    protected SequenceListener sequenceListener;
+    private int[] strength = new int[]{0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f};
+    private int waitTime;
+    private Track availableTrack;
+    private int availableTrackNum;
 
-    public void setOnNextListener(OnNextListener onNextListener) {
-        this.onNextListener = onNextListener;
+    protected void release() {
+        this.strength = null;
+        this.tracks = null;
+        this.availableTrack = null;
     }
 
-    public void setOnEndListener(OnEndListener onEndListener) {
-        this.onEndListener = onEndListener;
-    }
-
-    public void onKey(int value, int volume) {
-        onNextListener.doKey(value, volume);
-    }
-
-    public void addKey(int time, int volume, int value, int channel) {
-        operateTrack.addKey(new BarrageKey(time, volume, value, channel));
-    }
-
-    public void addTime(int time) {
-        if (time == 0) return;
-        for (BarrageKey key : operateTrack.keys) {
-            if (!key.isOver) key.addTime(time);
-        }
-    }
-
-    public void finishKey(int value, int channel) {
-        for (BarrageKey key : operateTrack.keys) {
-            if (!key.isOver && key.value == value && key.channel == channel) key.finish();
-        }
-    }
-
-    public void addTrack() {
-        Track track = new Track();
-        tracks.add(track);
-        operateTrack = track;
-    }
-
-    public void setTick(int tick) {
-        this.tick = tick;
-    }
-
-    public void setTrack(int track) {
-        operateTrack.setTrack(track);
-    }
-
-    public void setRemark(String remark) {
-        operateTrack.setRemark(remark);
-    }
-
-    public void setCopyright(String copyright) {
-        operateTrack.setCopyright(copyright);
-    }
-
-    public void setTrackName(String trackName) {
-        operateTrack.setTrackName(trackName);
-    }
-
-    public void setInstrument(String instrument) {
-        operateTrack.setInstrument(instrument);
-    }
-
-    public void addLyricEvent(int time, String str) {
-        operateTrack.addLyricEvent(time, str);
-    }
-
-    public void addTagEvent(int time, String str) {
-        operateTrack.addTagEvent(time, str);
-    }
-
-    public void addFlagEvent(int time, String str) {
-        operateTrack.addFlagEvent(time, str);
-    }
-
-    @Override
-    public String toString() {
-        return "Sequence{" +
-                "tracks=" + tracks +
-                ", tick=" + tick +
-                '}';
+    public void setSequenceListener(SequenceListener listener) {
+        this.sequenceListener = listener;
     }
 
     protected void sequence() {
     }
 
-    public void release() {
-        tracks.clear();
+    public void sort() {
+        int j = 0;
+        for (Track t : tracks) {
+            if (hasValue(t)) j++;
+            t.setPosition(j);
+        }
     }
 
-    public interface OnNextListener {
-        void doKey(int value, int volume);
+    public boolean hasValue(Track track) {
+        for (BarrageKey b : track.events) {
+            if (b.value < 0x7f) return true;
+        }
+        return false;
     }
 
-    public interface OnEndListener {
-        void exit() throws InterruptedException;
+
+    public void waitTime(int time) {
+        for (BarrageKey e : availableTrack.events) {
+            if (!e.finish) e.addTime(time);
+        }
+        this.waitTime += time;
+    }
+
+    public void addEvent(int value, int volume, int channel) {
+        availableTrack.addEvent(new BarrageKey(waitTime, value, volume * strength[channel] / 0x7f, channel));
+        waitTime = 0;
+    }
+
+    public void finishEvent(int value, int channel) {
+        for (BarrageKey e : availableTrack.events) {
+            if (!e.finish && e.value == value && e.channel == channel) e.finish();
+        }
+    }
+
+    public void addEvent(byte[] data, int channel) {
+        addEvent(data[0], data[1], channel);
+    }
+
+    public void finishEvent(byte[] data, int channel) {
+        finishEvent(data[0], channel);
+    }
+
+    public void changeControl(byte[] data) {
+
+    }
+
+    public void nextTrack() {
+        availableTrackNum++;
+        if (availableTrackNum == tracks.length) return;
+        tracks[availableTrackNum] = new Track();
+        availableTrack = tracks[availableTrackNum];
+        waitTime = 0;
+    }
+
+    public void setTracks(int nums) {
+        this.tracks = new Track[nums];
+        tracks[0] = new Track();
+        availableTrack = tracks[0];
+        availableTrackNum = 0;
+    }
+
+    public void setInstrument(int i) {
+        availableTrack.setInstrument(i);
+    }
+
+    public void changeStrength(int channel, int strength) {
+        this.strength[channel] = strength;
+    }
+
+    public void setTackInfo(String info) {
+        availableTrack.setInfo(info);
+    }
+
+    public void setTackAuthor(String autor) {
+        availableTrack.setAuthor(autor);
+    }
+
+    public void setTackName(String name) {
+        availableTrack.setName(name);
+    }
+
+    public void setTackInstrument(String instrument) {
+        availableTrack.setInstrument(instrument);
+    }
+
+    public void addLyric(String lyric) {
+        availableTrack.addStringEvent(new LyricKey(waitTime, 0x80 & 0x05, lyric));
+        waitTime = 0;
+    }
+
+    public void addFlag(int flag) {
+        availableTrack.addEvent(new BarrageKey(waitTime, 0x80 & 0x06, flag, 0x00));
+        waitTime = 0;
+    }
+
+    public void stringEvent(String event) {
+        availableTrack.addStringEvent(new LyricKey(waitTime, 0x80 & 0x07, event));
+        waitTime = 0;
+    }
+
+    public void setBPM(int event) {
+        availableTrack.setBPM(event);
+    }
+
+    public void setIst(int i) {
+        availableTrack.setIst(i);
+    }
+
+    public interface SequenceListener {
+        void onEnd();
+
+        void onNext(int value, int volume, int channel, int track);
     }
 
     public static class Track {
-        public final List<BarrageKey> keys = new ArrayList<>();
-        public final List<StringEvent> lyricEvents = new ArrayList<>();
-        public final List<StringEvent> tagEvents = new ArrayList<>();
-        public final List<StringEvent> flagEvents = new ArrayList<>();
-        public int track;
-        public int position;
-        public String remark;
-        public String copyright;
-        public String trackName;
-        public String instrument;
+        protected int instrument;
+        protected int sample; // 1/4 key's sample
+        protected int bpm;    // the bpm
+        protected String name;
+        protected String author;
+        protected String instrumentName;
+        protected String info;
+        protected int ist;
+        protected int position;
+        protected List<BarrageKey> events = new ArrayList<>();
 
-        public void play() {
-            position++;
+        public void setIst(int i) {
+            this.ist = i;
         }
 
-        public boolean isEnd() {
-            return position >= keys.size();
+        public void setPosition(int i) {
+            this.position = i;
         }
 
-        public BarrageKey get() {
-            if (position >= keys.size())
-                return new BarrageKey(0, 0, 0x2f | 0x80, 0);
-            return keys.get(position);
+        public void addEvent(BarrageKey event) {
+            events.add(event);
         }
 
-        public void addKey(BarrageKey key) {
-            keys.add(key);
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public void setTrack(int track) {
-            this.track = track;
+        public void setAuthor(String name) {
+            this.author = author;
         }
 
-        public void setRemark(String remark) {
-            this.remark = remark;
+        public void setInfo(String info) {
+            this.info = info;
         }
 
-        public void setCopyright(String copyright) {
-            this.copyright = copyright;
+        public void addStringEvent(LyricKey event) {
+            events.add(event);
         }
 
-        public void setTrackName(String trackName) {
-            this.trackName = trackName;
+        public void setInstrument(int i) {
+            this.instrument = i;
         }
 
-        public void setInstrument(String instrument) {
-            this.instrument = instrument;
+        public void setInstrument(String name) {
+            this.instrumentName = name;
         }
 
-        public void addLyricEvent(int time, String str) {
-            lyricEvents.add(new StringEvent(time, str));
-        }
-
-        public void addTagEvent(int time, String str) {
-            tagEvents.add(new StringEvent(time, str));
-        }
-
-        public void addFlagEvent(int time, String str) {
-            flagEvents.add(new StringEvent(time, str));
+        public void setBPM(int event) {
+            this.bpm = event;
         }
 
         @Override
         public String toString() {
             return "Track{" +
-                    "keys=" + keys +
-                    ", lyricEvents=" + lyricEvents +
-                    ", tagEvents=" + tagEvents +
-                    ", flagEvents=" + flagEvents +
-                    ", position=" + track +
-                    ", remark='" + remark + '\'' +
-                    ", copyright='" + copyright + '\'' +
-                    ", trackName='" + trackName + '\'' +
-                    ", instrument='" + instrument + '\'' +
+                    "instrument=" + instrument +
+                    ", sample=" + sample +
+                    ", bpm=" + bpm +
+                    ", name='" + name + '\'' +
+                    ", author='" + author + '\'' +
+                    ", instrumentName='" + instrumentName + '\'' +
+                    ", info='" + info + '\'' +
+                    ", ist='" + ist + '\'' +
+                    ", position='" + position + '\'' +
+                    ", events=" + events +
                     '}';
-        }
-
-        public static class StringEvent {
-            private String str;
-            private int time;
-
-            public StringEvent(int time, String str) {
-                this.str = str;
-                this.time = time;
-            }
-
-            @Override
-            public String toString() {
-                return "StringEvent{" +
-                        "str='" + str + '\'' +
-                        ", time=" + time +
-                        '}';
-            }
         }
     }
 }

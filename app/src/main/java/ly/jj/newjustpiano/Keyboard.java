@@ -3,15 +3,13 @@ package ly.jj.newjustpiano;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.widget.Button;
 import androidx.annotation.Nullable;
+import ly.jj.newjustpiano.tools.Sequence;
 import ly.jj.newjustpiano.tools.SequenceExtractor;
 import ly.jj.newjustpiano.views.BarrageView;
 import ly.jj.newjustpiano.views.KeyboardView;
 
-import static java.lang.Thread.sleep;
 import static ly.jj.newjustpiano.items.StaticItems.playingSong;
-import static ly.jj.newjustpiano.items.StaticItems.soundMixer;
 import static ly.jj.newjustpiano.tools.StaticTools.setFullScreen;
 
 public class Keyboard extends Activity {
@@ -35,13 +33,19 @@ public class Keyboard extends Activity {
         barrageView.setOnClickBarrageListener(System.out::println);
         keyboardView.setOnKeyDownListener(barrageView::pressKey);
         sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
-        sequenceExtractor.extractor();
-        sequenceExtractor.setOnEndListener(() -> {
-            sleep(3000);
-            this.finish();
+        sequenceExtractor.setSequenceListener(new Sequence.SequenceListener() {
+            @Override
+            public void onEnd() {
+                Keyboard.this.finish();
+            }
+
+            @Override
+            public void onNext(int value, int volume, int channel, int track) {
+                barrageView.addKey(value, volume, channel, track);
+            }
         });
-        sequenceExtractor.setOnNextListener((barrageView::addKey));
-        new Thread(sequenceExtractor::sequence).start();
+
+        sequenceExtractor.sequence();
     }
 
     @Override

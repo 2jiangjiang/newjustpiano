@@ -1,41 +1,48 @@
 package ly.jj.newjustpiano.items;
 
 public class BarrageKey {
-    public int channel;//from 0 single left double right
-    public int value;
     public int volume;
-    public float length = 0;
+    public int value;
+    public int wait;
     public int time;
-    public boolean isOver = false;
+    public int channel;
+    public int track;
+    public float length;
+    public boolean finish;
 
-    public BarrageKey(int time, int volume, int value, int channel) {
-        this.time = time;
-        this.value = value;
+    public BarrageKey(int wait, int value, int volume, int channel) {
+        this.wait = wait;
         this.volume = volume;
-        this.channel = channel;
-        if (value > 0x7f) isOver = true;
+        this.value = value;
     }
 
-    public void addTime(float tick) {
-        length += tick;
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
+
+    public void waited(int wait) {
+        this.wait -= wait;
+    }
+
+    public void addTime(int time) {
+        this.time += time;
     }
 
     public void finish() {
-        this.isOver = true;
+        this.finish = true;
     }
 
-    public void setChannel(int channel) {
-        this.channel = channel;
+    public void addLength(float length) {
+        this.length += length;
     }
 
     @Override
     public String toString() {
         return "BarrageKey{" +
-                "channel=" + channel +
-                (value > 0x7f ? ", flag=" + (value & 0x7f) : ", value=" + value) +
-                ", volume=" + volume +
-                ", length=" + length +
-                ", time=" + time +
+                "volume=" + volume +
+                (value > 0x7f ? ", flag=" + Integer.toHexString(value & 0x7f) : ", value=" + value) +
+                ", wait=" + wait +
+                ", channel=" + channel +
                 '}';
     }
 }

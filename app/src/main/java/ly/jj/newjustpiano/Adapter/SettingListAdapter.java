@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.*;
 import ly.jj.newjustpiano.R;
 
+import java.util.Map;
+
 import static ly.jj.newjustpiano.items.StaticItems.*;
 
 public class SettingListAdapter {
@@ -45,12 +47,19 @@ public class SettingListAdapter {
         row = new TableRow(context);
         TableRow.LayoutParams params = new TableRow.LayoutParams();
         params.span = 5;
-        for (int i = 0; i < seekSettings.length; i++) {
+        for (int i = 0; i < seekSettings.size(); i++) {
+            Map<String, Map<Integer, Map<String, Integer>>> setting = seekSettings.get(i);
+            String set = (String) setting.keySet().toArray()[0];
+            Map<Integer, Map<String, Integer>> values = setting.get(set);
+            Integer v = (Integer) values.keySet().toArray()[0];
+            Map<String, Integer> value = values.get(v);
+            Object[] v1 = value.keySet().toArray();
+            Object[] v2 = value.values().toArray();
             final int a = i;
             View view = inflater.inflate(R.layout.set_seek, null);
-            setBackground(database.readSetting(seekSettings[a]) == 1, view);
-            ((TextView) view.findViewById(R.id.set_text)).setText(seekSettings[a]);
-            ((SeekBar) view.findViewById(R.id.set_seek)).setProgress(database.readSetting(seekSettings[a]));
+            setBackground(database.readSetting(set) == 1, view);
+            ((TextView) view.findViewById(R.id.set_text)).setText(set);
+            ((SeekBar) view.findViewById(R.id.set_seek)).setProgress(database.readSetting(set));
             ((SeekBar) view.findViewById(R.id.set_seek)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -67,20 +76,21 @@ public class SettingListAdapter {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    String str = "重启应用生效";
+                    String str = "";
                     switch (seekBar.getProgress() / 50) {
                         case 0:
-                            str += "默认";
+                            str = (String) v1[0];
                             break;
                         case 1:
-                            str += "模式1";
+                            str = (String) v1[1];
                             break;
                         case 2:
-                            str += "模式2";
+                            str = (String) v1[2];
                             break;
                     }
                     ((TextView) view.findViewById(R.id.set_info)).setText(str);
-                    database.writeSetting(seekSettings[a], seekBar.getProgress() / 50);
+                    database.writeSetting(set, (Integer) v2[seekBar.getProgress() / 50]);
+                    System.out.println("set setting " + set + " to " + v2[seekBar.getProgress() / 50]);
                 }
             });
             view.setLayoutParams(params);

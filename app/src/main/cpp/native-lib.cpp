@@ -1,13 +1,15 @@
 #include <jni.h>
 #include <string>
+#include <stdio.h>
 #include <oboe/Oboe.h>
 #include <fcntl.h>
-#include "log.h"
+#include <player/SimpleMultiPlayer.h>
 
 oboe::AudioStreamBuilder builder;
 auto mode = oboe::PerformanceMode::PowerSaving;
 int channelCount = 2;
 int sampleRates = 44100;
+int format=16;
 int c=0;
 class MyCallback : public oboe::AudioStreamCallback {
     public:
@@ -46,7 +48,7 @@ Java_ly_jj_newjustpiano_tools_SoundMixer_nativeBuild(JNIEnv* env, jobject) {
     builder.setDirection(oboe::Direction::Output);
     builder.setPerformanceMode(mode);
     builder.setSharingMode(oboe::SharingMode::Shared);
-    builder.setFormat(oboe::AudioFormat::I16);
+    builder.setFormat(oboe::AudioFormat::Float);
     builder.setChannelCount(channelCount);
     builder.setSampleRate(sampleRates);
     return env->NewStringUTF("Oboe Audio Channel Ready");
@@ -100,4 +102,13 @@ Java_ly_jj_newjustpiano_tools_SoundMixer_nativePlay(JNIEnv* env, jobject,jstring
         myCallback[i].isPlay=true;
         stream[i]->requestStart();
     }
+}
+extern "C" JNIEXPORT void JNICALL
+Java_ly_jj_newjustpiano_tools_SoundMixer_native_channel_play(JNIEnv* env,jobject,jstring path,jfloat volume,jint channel){
+    char* str =(char*) env->GetStringUTFChars(path,0);
+    FILE* audio=fopen(str,"rb");
+    int len=ftell(audio);
+    char* data=new char[len];
+    fgets(data,len,(FILE*)audio);
+
 }

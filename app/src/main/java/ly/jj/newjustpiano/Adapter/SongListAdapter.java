@@ -14,6 +14,7 @@ import android.widget.TextView;
 import ly.jj.newjustpiano.Keyboard;
 import ly.jj.newjustpiano.R;
 import ly.jj.newjustpiano.tools.DatabaseRW;
+import ly.jj.newjustpiano.tools.Sequence;
 import ly.jj.newjustpiano.tools.SequenceExtractor;
 
 import static ly.jj.newjustpiano.items.StaticItems.*;
@@ -65,9 +66,18 @@ public class SongListAdapter extends BaseAdapter {
                 cursor.moveToPosition(i);
                 playingSong = cursor.getString(DatabaseRW.SONG_DATA);
                 SequenceExtractor sequenceExtractor = new SequenceExtractor(Base64.decode(playingSong, Base64.DEFAULT));
-                sequenceExtractor.extractor();
-                sequenceExtractor.setOnNextListener((value, volume) -> soundMixer.play(value, volume));
-                new Thread(sequenceExtractor::sequence).start();
+                sequenceExtractor.setSequenceListener(new Sequence.SequenceListener() {
+                    @Override
+                    public void onEnd() {
+
+                    }
+
+                    @Override
+                    public void onNext(int value, int volume, int channel, int track) {
+                        soundMixer.play(value, volume);
+                    }
+                });
+                sequenceExtractor.sequence();
             });
             view.findViewById(R.id.song_share).setOnClickListener(v -> {
 

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ProgressBar;
+import ly.jj.newjustpiano.items.StaticItems;
 import ly.jj.newjustpiano.tools.DatabaseRW;
 import ly.jj.newjustpiano.tools.MediaDecoder;
 import ly.jj.newjustpiano.tools.SoundMixer;
@@ -39,6 +40,7 @@ public class Init extends Activity {
         setContentView(R.layout.init);
         progress = findViewById(R.id.init_progress);
         new Thread(() -> {
+            StaticItems.Init();
             progress.setProgress(0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 data = getDataDir();
@@ -110,7 +112,7 @@ public class Init extends Activity {
                 e.printStackTrace();
             } finally {
                 System.gc();
-                soundMixer.setMode(database.readSetting(seekSettings[0]));
+                soundMixer.setMode(database.readSetting((String) seekSettings.get(0).keySet().toArray()[0]));
                 soundMixer.build(sampleRate(), channelCount());
             }
             Intent intent = new Intent(this, Main.class);

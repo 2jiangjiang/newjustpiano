@@ -64,13 +64,13 @@ public class BarrageView extends View {
                 lock.lock();
                 List<BarrageKey> list = new ArrayList<>();
                 for (BarrageKey key : drawKeys) {
-                    key.addTime(step);
+                    key.addLength(step);
                     if (key.length > (viewHeight + barrageHeight * 2)) list.add(key);
                 }
                 drawKeys.removeAll(list);
                 list.clear();
                 for (BarrageKey key : playKeys) {
-                    key.addTime(step);
+                    key.addLength(step);
                     if (key.length > viewHeight) list.add(key);
                 }
                 playKeys.removeAll(list);
@@ -161,11 +161,11 @@ public class BarrageView extends View {
         this.onClickBarrageListener = onClickBarrageListener;
     }
 
-    public void addKey(int value, int volume) {
+    public void addKey(int value, int volume, int channel,int track) {
         lock.lock();
-        if (drawKeys.size() == 0 || drawKeys.get(drawKeys.size() - 1).length > 20)
-            drawKeys.add(new BarrageKey(0, volume, value, 0));
-        else playKeys.add(new BarrageKey(0, volume, value, 0));
+        if (track % 2 == 1 && (drawKeys.size() == 0 || drawKeys.get(drawKeys.size() - 1).length > 40))
+            drawKeys.add(new BarrageKey(0, value, volume, 0));
+        else playKeys.add(new BarrageKey(0, value, volume, 0));
         lock.unlock();
     }
 

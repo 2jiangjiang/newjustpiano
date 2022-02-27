@@ -11,11 +11,17 @@ public class SoundMixer {
     private final File[] sounds = new File[128];
     private final ReentrantLock lock = new ReentrantLock();
 
+    private int volume = 0x300;
+
     public SoundMixer() {
     }
 
     public SoundMixer(int sampleRate, int channels) {
         build(sampleRate, channels);
+    }
+
+    private void setVolume(float volume) {
+        this.volume = (int) (0x400 * volume);
     }
 
     public void setSound(File path) {
@@ -51,7 +57,7 @@ public class SoundMixer {
     }
 
     public void play(String path) {
-        play(path, 128);
+        play(path, 0x7f);
     }
 
     public void play(int i, int volume) {
@@ -65,7 +71,7 @@ public class SoundMixer {
 
     public void play(String path, int volume) {
         lock.lock();
-        nativePlay(path, ((float) volume) / 255);
+        nativePlay(path, ((float) volume) / this.volume);
         lock.unlock();
     }
 
